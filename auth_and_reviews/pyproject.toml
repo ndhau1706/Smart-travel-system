@@ -1,0 +1,36 @@
+[tool.black]
+
+line-length = 120
+
+target-version = ['py310']
+
+include = '\.pyi?$'
+
+extend-exclude = '''
+/(
+  # Thư mục
+  | venv
+  | .git
+  | __pycache__
+  | .pytest_cache
+  | migrations
+)/
+'''
+
+[tool.mypy]
+
+python_version = "3.10"
+
+# Báo lỗi nếu code import thư viện không có type hint
+# (Quan trọng: Đặt là True để nó bỏ qua lỗi của thư viện bên thứ 3 như Flask-Mail)
+ignore_missing_imports = true
+
+# Kiểm tra kỹ các hàm có ép kiểu không
+check_untyped_defs = true
+
+exclude = [
+    "venv",
+    ".git",
+    "migrations",
+    "tests"
+]
