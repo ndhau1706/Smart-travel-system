@@ -18,21 +18,21 @@ A modern restaurant booking and food discovery platform built with React, TypeSc
 
 ```
 Smart-Travel-System/
-├── New_Frontend/           # Frontend application
-│   ├── src/
-│   │   ├── components/     # Reusable UI components
-│   │   ├── pages/          # Page components
-│   │   ├── services/       # API services
-│   │   ├── stores/         # Zustand state stores
-│   │   ├── hooks/          # Custom React hooks
-│   │   └── lib/            # Utilities and configs
-│   └── backend/            # Backend API
-│       ├── app/
-│       │   ├── core/       # Core services (auth, db, etc.)
-│       │   ├── modules/    # Feature modules
-│       │   └── shared/     # Shared utilities
-│       └── tests/          # Test files
-└── plans/                  # Architecture documentation
+├── src/                    # Frontend application
+│   ├── components/         # Reusable UI components
+│   ├── pages/              # Page components
+│   ├── services/           # API services
+│   ├── stores/             # Zustand state stores
+│   ├── hooks/              # Custom React hooks
+│   └── lib/                # Utilities and configs
+├── public/                 # Frontend public assets
+├── backend/                # Backend API
+│   ├── app/
+│   │   ├── core/           # Core services (auth, db, etc.)
+│   │   ├── modules/        # Feature modules
+│   │   └── shared/         # Shared utilities
+│   └── tests/              # Test files
+└── docs/                   # Documentation
 ```
 
 ## 🚀 Tech Stack
@@ -69,8 +69,6 @@ Smart-Travel-System/
 ### Frontend Setup
 
 ```bash
-cd New_Frontend
-
 # Install dependencies
 npm install
 
@@ -81,7 +79,7 @@ npm run dev
 ### Backend Setup
 
 ```bash
-cd New_Frontend/backend
+cd backend
 
 # Create virtual environment
 python -m venv .venv
@@ -98,7 +96,7 @@ python main.py
 
 ### Frontend Environment Variables
 
-Create `.env` file in `New_Frontend/`:
+Create `.env` file in the repo root:
 
 ```env
 # Can be backend root or backend /api prefix (both supported)
@@ -108,7 +106,7 @@ VITE_API_BASE_URL=http://localhost:8000
 
 ### Backend Environment Variables
 
-Create `.env` file in `New_Frontend/backend/`:
+Create `.env` file in `backend/`:
 
 ```env
 # Application
@@ -151,7 +149,7 @@ CORS_ORIGINS=http://localhost:3000,http://localhost:5173
 ### Backend Tests
 
 ```bash
-cd New_Frontend/backend
+cd backend
 
 # Run all tests
 pytest
@@ -166,8 +164,6 @@ pytest tests/test_auth.py -v
 ### Frontend Tests
 
 ```bash
-cd New_Frontend
-
 # Run tests
 npm test
 
@@ -182,7 +178,7 @@ npm run test:coverage
 
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
-- **API Guide**: [backend/docs/API.md](New_Frontend/backend/docs/API.md)
+- **API Guide**: [docs/API_SCHEMA_DOCUMENTATION.md](docs/API_SCHEMA_DOCUMENTATION.md)
 
 ## 🔐 Security Features
 
@@ -258,11 +254,10 @@ app/
 
 ```bash
 # Frontend
-cd New_Frontend
 docker build -t smart-travel-frontend .
 
 # Backend
-cd New_Frontend/backend
+cd backend
 docker build -t smart-travel-backend .
 ```
 
