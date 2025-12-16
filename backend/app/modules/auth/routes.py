@@ -40,15 +40,17 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 def _now_utc() -> datetime:
-    return datetime.now(timezone.utc)
+    # Use naive UTC datetimes for DB compatibility (existing columns are TIMESTAMP WITHOUT TIME ZONE).
+    return datetime.utcnow()
 
 
 def _as_utc(dt: datetime | None) -> datetime | None:
     if dt is None:
         return None
     if dt.tzinfo is None:
-        return dt.replace(tzinfo=timezone.utc)
-    return dt.astimezone(timezone.utc)
+        return dt
+    # Normalize aware datetimes to naive UTC (fixes Postgres TIMESTAMPTZ vs naive comparisons).
+    return dt.astimezone(timezone.utc).replace(tzinfo=None)
 
 
 async def _get_otp(db: AsyncSession, email: str, purpose: OtpPurpose) -> EmailOtp | None:
