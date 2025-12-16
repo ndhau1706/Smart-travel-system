@@ -28,6 +28,19 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+
+    # Email / OTP (Brevo SMTP)
+    EMAIL_FROM: str = ""
+    EMAIL_FROM_NAME: str = "Smart Travel"
+    BREVO_API_KEY: str = ""
+    BREVO_SMTP_HOST: str = "smtp-relay.brevo.com"
+    BREVO_SMTP_PORT: int = 587
+    BREVO_SMTP_USER: str = ""
+    BREVO_SMTP_PASSWORD: str = ""
+
+    OTP_TTL_MIN: int = 10
+    OTP_MAX_ATTEMPTS: int = 5
+    OTP_RESEND_LIMIT_PER_HOUR: int = 5
     
     # CORS
     CORS_ORIGINS: str = "http://localhost:3000,http://localhost:5173,https://smart-travel-frontend-85676926926.asia-southeast1.run.app,https://habi.software"
