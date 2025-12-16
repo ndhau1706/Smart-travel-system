@@ -3,7 +3,7 @@ Authentication API routes
 """
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -40,7 +40,15 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 def _now_utc() -> datetime:
-    return datetime.utcnow()
+    return datetime.now(timezone.utc)
+
+
+def _as_utc(dt: datetime | None) -> datetime | None:
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
 
 
 async def _get_otp(db: AsyncSession, email: str, purpose: OtpPurpose) -> EmailOtp | None:
@@ -51,7 +59,9 @@ async def _get_otp(db: AsyncSession, email: str, purpose: OtpPurpose) -> EmailOt
 
 
 def _is_expired(otp: EmailOtp, now: datetime) -> bool:
-    return not otp.expires_at or otp.expires_at <= now
+    now_utc = _as_utc(now) or now
+    expires_utc = _as_utc(otp.expires_at) if getattr(otp, "expires_at", None) else None
+    return not expires_utc or expires_utc <= now_utc
 
 
 def _check_resend_limit(otp: EmailOtp | None, now: datetime) -> str | None:
@@ -62,13 +72,29 @@ def _check_resend_limit(otp: EmailOtp | None, now: datetime) -> str | None:
     if not otp or not otp.resend_window_started_at:
         return None
 
-    if now - otp.resend_window_started_at >= timedelta(hours=1):
+    now_utc = _as_utc(now) or now
+    started_utc = _as_utc(otp.resend_window_started_at) or otp.resend_window_started_at
+    if now_utc - started_utc >= timedelta(hours=1):
         return None
 
     if (otp.resend_count or 0) >= limit:
         return "Bạn đã yêu cầu OTP quá nhiều lần. Vui lòng thử lại sau."
 
     return None
+
+
+def _reset_resend_window_if_needed(otp: EmailOtp, now: datetime) -> None:
+    now_utc = _as_utc(now) or now
+    started = otp.resend_window_started_at
+    if not started:
+        otp.resend_window_started_at = now
+        otp.resend_count = 0
+        return
+
+    started_utc = _as_utc(started) or started
+    if now_utc - started_utc >= timedelta(hours=1):
+        otp.resend_window_started_at = now
+        otp.resend_count = 0
 
 
 @router.post("/login", response_model=dict)
@@ -168,11 +194,7 @@ async def register_start(request: RegisterStartRequest, db: AsyncSession = Depen
 
     if existing:
         # Reset attempts on each resend and update payload.
-        if existing.resend_window_started_at and now - existing.resend_window_started_at >= timedelta(hours=1):
-            existing.resend_window_started_at = now
-            existing.resend_count = 0
-        if not existing.resend_window_started_at:
-            existing.resend_window_started_at = now
+        _reset_resend_window_if_needed(existing, now)
 
         existing.code_hash = otp_hash
         existing.payload_json = json.dumps(payload, ensure_ascii=False)
@@ -294,11 +316,7 @@ async def forgot_password(request: ForgotPasswordRequest, db: AsyncSession = Dep
     payload = {"user_id": user.id}
 
     if existing:
-        if existing.resend_window_started_at and now - existing.resend_window_started_at >= timedelta(hours=1):
-            existing.resend_window_started_at = now
-            existing.resend_count = 0
-        if not existing.resend_window_started_at:
-            existing.resend_window_started_at = now
+        _reset_resend_window_if_needed(existing, now)
 
         existing.code_hash = otp_hash
         existing.payload_json = json.dumps(payload, ensure_ascii=False)
