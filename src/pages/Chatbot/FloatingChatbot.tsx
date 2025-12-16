@@ -78,7 +78,7 @@ export function FloatingChatbot() {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-safe-6 right-safe-6 z-50 h-16 w-16 rounded-full bg-gradient-to-br from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 shadow-2xl text-white p-0"
+        className="fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full bg-gradient-to-br from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 shadow-2xl text-white p-0"
         style={{
           boxShadow: "0 0 30px rgba(255,182,193,0.6), 0 10px 40px rgba(0,0,0,0.2)",
         }}
@@ -90,9 +90,9 @@ export function FloatingChatbot() {
 
   return (
     <Card
-      className={`fixed z-50 bg-gradient-to-br from-pink-50 via-rose-50 to-fuchsia-50 border-2 border-pink-200 shadow-2xl overflow-hidden transition-all duration-300 ${
+      className={`fixed bottom-3 right-3 z-50 bg-gradient-to-br from-pink-50 via-rose-50 to-fuchsia-50 border-2 border-pink-200 shadow-2xl overflow-hidden transition-all duration-300 ${
         isMinimized ? "h-16" : "h-[500px] sm:h-[550px] md:h-[600px]"
-      } w-[calc(100vw-1.5rem)] sm:w-[360px] md:w-[400px] bottom-safe-3 right-safe-3 rounded-2xl sm:rounded-3xl`}
+      } w-[calc(100vw-1.5rem)] sm:w-[360px] md:w-[400px] rounded-2xl sm:rounded-3xl`}
       style={{
         boxShadow: "0 0 40px rgba(255,182,193,0.5), 0 20px 60px rgba(0,0,0,0.15)",
       }}

@@ -1,3 +1,17 @@
+.text-pink-800{
+  font-size: 22px
+}
+
+/* Fix duplicate text issue */
+.text-pink-600 {
+  text-shadow: none !important;
+}
+
+.text-pink-600::before,
+.text-pink-600::after {
+  content: none !important;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -82,12 +96,11 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-    overflow-x: hidden;
   }
 }
 
 /* Custom styles */
-h1, h2, h3 {
+h1,h2,h3 {
   font-size: 25px;
   font-style: normal;
   font-family: 'Segoe UI', 'Roboto', sans-serif;
@@ -95,7 +108,13 @@ h1, h2, h3 {
 }
 
 .bg-gradient-to-r.from-pink-400 {
-  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  font-family: 'Segoe UI', 'Roboto', sans-serif !important;
+  font-weight: 700 !important;
+}
+
+.bg-white\/80.backdrop-blur-lg{
+  font-family: 'Segoe UI', 'Roboto', sans-serif !important;
+  font-weight: 700 !important;
 }
 
 /* Badge/Tag styles - ensure proper text display */
@@ -108,6 +127,83 @@ h1, h2, h3 {
 
 .font-bold {
   font-weight: bold;
+}
+
+.text-gray-900{
+  font-size: 20px;
+}
+
+.text-gray-900.font-bold{
+  font-family: "Dela Gothic One", sans-serif;
+  font-weight: 100;
+  font-style: normal;
+}
+
+
+.text-gray-700 {
+  font-family: "Georama", sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+  "wdth" 100;
+}
+
+.text-pink-700{
+  font-size: 15px
+}
+
+.text-pink-600{
+  font-family: "Play", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.text-pink-700.text-lg.max-w-3xl.mx-auto{
+  font-family: "Play", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 18px
+}
+
+.text-pink-700.mb-2{
+  font-family: "Dela Gothic One", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 18px
+}
+
+.bg-gradient-to-r.from-pink-600 {
+  font-family: "Bungee", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 30px
+}
+
+.text-pink-800.font-bold{
+  font-family: "Dela Gothic One", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
+.text-white.font-bold {
+  font-family: "Dela Gothic One", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.text-white\/90 {
+  font-family: "Play", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 18px
+}
+
+.hidden sm:inline{
+  font-family: 'Segoe UI', 'Roboto', sans-serif !important;
+  font-weight: 700 !important;
 }
 
 .text-ju {
@@ -166,58 +262,6 @@ h1, h2, h3 {
   background: rgba(255, 105, 180, 0.7);
 }
 
-@layer utilities {
-  /* Mobile viewport fix (iOS Safari dynamic address bar) */
-  .h-app {
-    height: 100vh;
-    height: 100svh;
-    height: 100dvh;
-  }
-
-  .min-h-app {
-    min-height: 100vh;
-    min-height: 100svh;
-    min-height: 100dvh;
-  }
-
-  /* Safe-area helpers for notched devices */
-  .top-safe-4 {
-    top: calc(constant(safe-area-inset-top) + 1rem);
-    top: calc(env(safe-area-inset-top) + 1rem);
-  }
-
-  .left-safe-4 {
-    left: calc(constant(safe-area-inset-left) + 1rem);
-    left: calc(env(safe-area-inset-left) + 1rem);
-  }
-
-  .right-safe-4 {
-    right: calc(constant(safe-area-inset-right) + 1rem);
-    right: calc(env(safe-area-inset-right) + 1rem);
-  }
-
-  .bottom-safe-6 {
-    bottom: calc(constant(safe-area-inset-bottom) + 1.5rem);
-    bottom: calc(env(safe-area-inset-bottom) + 1.5rem);
-  }
-
-  .right-safe-6 {
-    right: calc(constant(safe-area-inset-right) + 1.5rem);
-    right: calc(env(safe-area-inset-right) + 1.5rem);
-  }
-
-  .bottom-safe-3 {
-    bottom: calc(constant(safe-area-inset-bottom) + 0.75rem);
-    bottom: calc(env(safe-area-inset-bottom) + 0.75rem);
-  }
-
-  .right-safe-3 {
-    right: calc(constant(safe-area-inset-right) + 0.75rem);
-    right: calc(env(safe-area-inset-right) + 0.75rem);
-  }
-
-  .pb-safe-4 {
-    padding-bottom: calc(constant(safe-area-inset-bottom) + 1rem);
-    padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
-  }
+.mr-2 h-5 w-5{
+  font-weight: bold;
 }

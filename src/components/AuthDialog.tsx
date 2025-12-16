@@ -143,16 +143,16 @@ export function AuthDialog({ open, onOpenChange, onLogin }: AuthDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="sm:max-w-[425px] bg-gradient-to-br from-pink-50 via-purple-50 to-fuchsia-50 border-2 border-pink-300 shadow-2xl rounded-3xl"
+        className="sm:max-w-[500px] bg-gradient-to-br from-pink-50 via-purple-50 to-fuchsia-50 border-2 border-pink-300 shadow-2xl rounded-3xl"
         style={{ boxShadow: "0 0 40px rgba(255,182,193,0.5), inset 0 0 30px rgba(255,255,255,0.5)" }}
       >
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-pink-700">
+          <DialogTitle className="flex items-center justify-center gap-2 text-pink-700">
             <Sparkles className="h-5 w-5" />
-            Chào mừng đến với Cosmic Food
+            Chào mừng đến với Food Journey Assistant
           </DialogTitle>
-          <DialogDescription className="text-pink-600">
-            Đăng nhập hoặc tạo tài khoản để bắt đầu khám phá ẩm thực Việt Nam
+          <DialogDescription className="text-pink-600 text-center">
+            Đăng nhập hoặc Tạo tài khoản để khám phá ẩm thực Việt Nam
           </DialogDescription>
         </DialogHeader>
 
@@ -160,22 +160,22 @@ export function AuthDialog({ open, onOpenChange, onLogin }: AuthDialogProps) {
           <TabsList className="grid w-full grid-cols-2 bg-pink-200/50">
             <TabsTrigger
               value="login"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-300 data-[state=active]:to-rose-300 data-[state=active]:text-white rounded-xl"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-300 data-[state=active]:to-rose-300 data-[state=active]:text-white rounded-xl font-bold"
             >
               Đăng nhập
             </TabsTrigger>
             <TabsTrigger
               value="register"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-300 data-[state=active]:to-rose-300 data-[state=active]:text-white rounded-xl"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-300 data-[state=active]:to-rose-300 data-[state=active]:text-white rounded-xl font-bold"
             >
               Đăng ký
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="login" className="space-y-4 mt-4">
+          <TabsContent value="login" className="space-y-4 mt-2">
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="login-email" className="text-pink-700">
+                <Label htmlFor="login-email" className="text-pink-700 font-bold">
                   Email
                 </Label>
                 <div className="relative">
@@ -183,7 +183,7 @@ export function AuthDialog({ open, onOpenChange, onLogin }: AuthDialogProps) {
                   <Input
                     id="login-email"
                     type="email"
-                    placeholder="email@example.com"
+                    placeholder="Email@example.com"
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
                     className="pl-10 bg-white/80 border-2 border-pink-300 focus:border-pink-400 rounded-2xl"
@@ -192,7 +192,7 @@ export function AuthDialog({ open, onOpenChange, onLogin }: AuthDialogProps) {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="login-password" className="text-pink-700">
+                <Label htmlFor="login-password" className="text-pink-700 font-bold">
                   Mật khẩu
                 </Label>
                 <div className="relative">
@@ -211,11 +211,11 @@ export function AuthDialog({ open, onOpenChange, onLogin }: AuthDialogProps) {
               {!forgotMode && (
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-pink-400 via-rose-400 to-fuchsia-400 hover:from-pink-300 hover:via-rose-300 hover:to-fuchsia-300 text-white shadow-xl rounded-2xl border-2 border-pink-200"
+                  className="w-full bg-gradient-to-r from-pink-400 via-rose-400 to-fuchsia-400 hover:from-pink-300 hover:via-rose-300 hover:to-fuchsia-300 text-white shadow-xl rounded-2xl border-2 border-pink-200 font-bold"
                   style={{ boxShadow: "0 0 20px rgba(255,182,193,0.5)" }}
                   disabled={loading}
                 >
-                  <Sparkles className="mr-2 h-4 w-4" />
+                  <Sparkles className= "h-4 w-4 font-bold" />
                   Đăng nhập
                 </Button>
               )}
@@ -235,14 +235,14 @@ export function AuthDialog({ open, onOpenChange, onLogin }: AuthDialogProps) {
 
             {forgotMode && (
               <div className="space-y-3 border border-pink-200 rounded-2xl p-3 bg-white/70">
-                <p className="text-pink-700 font-semibold">Đặt lại mật khẩu</p>
+                <p className="text-pink-700 font-bold">Đặt lại mật khẩu</p>
                 <form onSubmit={handleResetPassword} className="space-y-3">
-                  <Label className="text-pink-700">Email</Label>
+                  <Label className="text-pink-700 font-bold">Email</Label>
                   <Input
                     type="email"
                     value={registerEmail}
                     onChange={(e) => setRegisterEmail(e.target.value)}
-                    placeholder="email@example.com"
+                    placeholder="Email@example.com"
                     className="bg-white/80 border-2 border-pink-300 focus:border-pink-400 rounded-2xl"
                     required
                   />
@@ -250,7 +250,7 @@ export function AuthDialog({ open, onOpenChange, onLogin }: AuthDialogProps) {
                     <Button
                       type="button"
                       variant="secondary"
-                      className="bg-white border border-pink-200"
+                      className="font-bold flex-1 bg-gradient-to-r from-pink-400 to-rose-400 text-white"
                       onClick={handleForgotSendOtp}
                       disabled={loading}
                     >
@@ -265,6 +265,7 @@ export function AuthDialog({ open, onOpenChange, onLogin }: AuthDialogProps) {
                       required
                     />
                   </div>
+                  <Label className="text-pink-700 font-bold">Mật khẩu mới</Label>
                   <Input
                     type="password"
                     value={forgotNewPass}
@@ -284,12 +285,14 @@ export function AuthDialog({ open, onOpenChange, onLogin }: AuthDialogProps) {
                   <div className="flex gap-2">
                     <Button
                       type="submit"
-                      className="flex-1 bg-gradient-to-r from-pink-400 to-rose-400 text-white"
+                      className="font-bold flex-1 bg-gradient-to-r from-pink-400 to-rose-400 text-white"
                       disabled={loading}
                     >
                       Đặt lại mật khẩu
                     </Button>
-                    <Button type="button" variant="ghost" onClick={() => setForgotMode(false)}>
+                    <Button type="button" variant="ghost" onClick={() => setForgotMode(false)}
+                      className="font-bold  text-pink-700"  
+                    >
                       Đóng
                     </Button>
                   </div>
@@ -298,11 +301,11 @@ export function AuthDialog({ open, onOpenChange, onLogin }: AuthDialogProps) {
             )}
           </TabsContent>
 
-          <TabsContent value="register" className="space-y-4 mt-4">
+          <TabsContent value="register" className="space-y-4 mt-2">
             {registerStep === "form" ? (
               <form onSubmit={handleRegisterStart} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="register-name" className="text-pink-700">
+                  <Label htmlFor="register-name" className="text-pink-700 font-bold">
                     Tên hiển thị
                   </Label>
                   <div className="relative">
@@ -319,7 +322,7 @@ export function AuthDialog({ open, onOpenChange, onLogin }: AuthDialogProps) {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="register-email" className="text-pink-700">
+                  <Label htmlFor="register-email" className="text-pink-700 font-bold">
                     Email
                   </Label>
                   <div className="relative">
@@ -327,7 +330,7 @@ export function AuthDialog({ open, onOpenChange, onLogin }: AuthDialogProps) {
                     <Input
                       id="register-email"
                       type="email"
-                      placeholder="email@example.com"
+                      placeholder="Email@example.com"
                       value={registerEmail}
                       onChange={(e) => setRegisterEmail(e.target.value)}
                       className="pl-10 bg-white/80 border-2 border-pink-300 focus:border-pink-400 rounded-2xl"
@@ -336,7 +339,7 @@ export function AuthDialog({ open, onOpenChange, onLogin }: AuthDialogProps) {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="register-password" className="text-pink-700">
+                  <Label htmlFor="register-password" className="text-pink-700 font-bold">
                     Mật khẩu
                   </Label>
                   <div className="relative">
@@ -362,11 +365,11 @@ export function AuthDialog({ open, onOpenChange, onLogin }: AuthDialogProps) {
                 />
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-pink-400 via-rose-400 to-fuchsia-400 hover:from-pink-300 hover:via-rose-300 hover:to-fuchsia-300 text-white shadow-xl rounded-2xl border-2 border-pink-200"
+                  className="font-bold w-full bg-gradient-to-r from-pink-400 via-rose-400 to-fuchsia-400 hover:from-pink-300 hover:via-rose-300 hover:to-fuchsia-300 text-white shadow-xl rounded-2xl border-2 border-pink-200"
                   style={{ boxShadow: "0 0 20px rgba(255,182,193,0.5)" }}
                   disabled={loading}
                 >
-                  <Sparkles className="mr-2 h-4 w-4" />
+                  <Sparkles className="h-4 w-4" />
                   Gửi OTP
                 </Button>
               </form>

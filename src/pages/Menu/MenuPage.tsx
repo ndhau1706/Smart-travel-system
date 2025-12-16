@@ -119,12 +119,12 @@ export function MenuPage() {
   });
 
   return (
-    <div className="min-h-app relative">
-      <ScrollArea className="h-app">
+    <div className="min-h-screen relative">
+      <ScrollArea className="h-screen">
         <div className="max-w-7xl mx-auto p-4 md:p-6 pt-20 space-y-6">
           {/* Header */}
           <div className="text-center space-y-3">
-            <div className="flex justify-center mb-4">
+            <div className="flex justify-center">
               <div
                 className="p-6 rounded-full bg-gradient-to-br from-pink-400 via-rose-400 to-fuchsia-400 shadow-2xl animate-pulse border-4 border-pink-200"
                 style={{
@@ -136,14 +136,15 @@ export function MenuPage() {
               </div>
             </div>
             <h1 className="bg-gradient-to-r from-pink-600 via-rose-600 to-fuchsia-600 bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(255,182,193,0.4)]">
-              🍽️ Thực đơn tổng hợp
+              🍽️ Bản đồ Vị giác 🍽️
             </h1>
-            <p className="text-pink-700">Khám phá tất cả các món ăn từ các nhà hàng của chúng tôi</p>
+            <p className="text-pink-700 text-lg max-w-3xl mx-auto">Mỗi món ăn là một điểm đến thú vị
+            <br />Để chúng tôi dẫn dắt bạn đi qua những cung bậc cảm xúc của nền ẩm thực Việt Nam đa dạng</p>
           </div>
 
           {/* Search */}
           <div className="relative max-w-2xl mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-pink-400" />
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-5 w-5 text-pink-400" />
             <Input
               type="text"
               placeholder="Tìm kiếm món ăn..."
@@ -170,7 +171,7 @@ export function MenuPage() {
 
             {categories.map((category) => (
               <TabsContent key={category} value={category}>
-                <div className="mb-4 text-pink-700">
+                <div className="mb-4 text-pink-700 font-bold">
                   Tìm thấy <span>{filteredItems.length}</span> món ăn
                 </div>
 
@@ -188,12 +189,12 @@ export function MenuPage() {
                             alt={item.name}
                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                           />
-                          <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full shadow-lg border border-pink-200">
+                          <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py rounded-full shadow-lg border border-pink-200">
                             <span className="text-pink-600">{item.price.toLocaleString("vi-VN")}đ</span>
                           </div>
                         </div>
 
-                        <div className="p-5 space-y-3">
+                        <div className="px-4 pt-1 pb-4 space-y-3">
                           <div>
                             <h3 className="text-gray-900 mb-1">{item.name}</h3>
                             <p className="text-sm text-pink-600">{item.restaurant}</p>

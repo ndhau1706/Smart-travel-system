@@ -313,66 +313,25 @@ export function RestaurantDetail({ restaurant, onBack }: RestaurantDetailProps) 
           >
             <div className="relative h-64 md:h-80 overflow-hidden">
               <ImageWithFallback
-                src={images[activeImageIndex]}
+                src={restaurant.image}
                 alt={restaurant.name}
                 className="w-full h-full object-cover"
               />
-
-              {images.length > 1 && (
-                <>
-                  <button
-                    type="button"
-                    aria-label="Ảnh trước"
-                    onClick={() =>
-                      setActiveImageIndex((idx) => (idx - 1 + images.length) % images.length)
-                    }
-                    className="absolute left-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/70 hover:bg-white/90 backdrop-blur-md border border-pink-200 shadow-lg p-2 transition"
-                  >
-                    <ChevronLeft className="h-6 w-6 text-pink-700" />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Ảnh tiếp theo"
-                    onClick={() => setActiveImageIndex((idx) => (idx + 1) % images.length)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/70 hover:bg-white/90 backdrop-blur-md border border-pink-200 shadow-lg p-2 transition"
-                  >
-                    <ChevronRight className="h-6 w-6 text-pink-700" />
-                  </button>
-
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-black/25 backdrop-blur-md px-3 py-1 rounded-full">
-                    {images.map((_, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        aria-label={`Chọn ảnh ${idx + 1}`}
-                        onClick={() => setActiveImageIndex(idx)}
-                        className={`h-2 w-2 rounded-full transition ${
-                          idx === activeImageIndex ? "bg-white" : "bg-white/50 hover:bg-white/80"
-                        }`}
-                      />
-                    ))}
-                    <span className="ml-1 text-xs text-white/90 tabular-nums">
-                      {activeImageIndex + 1}/{images.length}
-                    </span>
-                  </div>
-                </>
-              )}
-
-              <div className="absolute inset-0 z-10 pointer-events-none bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute bottom-6 left-6 right-6 z-20 text-white">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute bottom-6 left-6 right-6 text-white">
                 <h1 className="text-white mb-2">{restaurant.name}</h1>
                 <div className="flex items-center gap-4 flex-wrap">
                   <div className="flex items-center gap-1 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span>{displayRating}</span>
-                    <span className="text-sm">({displayReviewCount} đánh giá)</span>
+                    <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
+                    <span>{restaurant.rating}</span>
+                    <span className="text-sm">({restaurant.reviewCount} đánh giá)</span>
                   </div>
                   <span className="text-sm">{restaurant.cuisine}</span>
                 </div>
               </div>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div className="p-4 space-y-4">
               <p className="text-gray-700">{restaurant.description}</p>
 
               <div className="flex flex-wrap gap-2">
@@ -387,21 +346,29 @@ export function RestaurantDetail({ restaurant, onBack }: RestaurantDetailProps) 
                 ))}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-pink-500" />
+              <div className="flex flex-col gap-3 text-gray-700">
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="h-6 w-6 text-pink-500" />
+                  </div>
                   <span>{restaurant.address}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Phone className="h-5 w-5 text-pink-500" />
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                    <Phone className="h-6 w-6 text-pink-500" />
+                  </div>
                   <span>{restaurant.phone}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-pink-500" />
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                    <Clock className="h-6 w-6 text-pink-500" />
+                  </div>
                   <span>{restaurant.openTime}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <DollarSign className="h-5 w-5 text-pink-500" />
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                    <DollarSign className="h-6 w-6 text-pink-500" />
+                  </div>
                   <span>{"$".repeat(restaurant.priceLevel)} - Giá trung bình</span>
                 </div>
               </div>
