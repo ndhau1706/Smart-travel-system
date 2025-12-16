@@ -60,6 +60,15 @@ export interface ApiReview {
   updated_at?: string;
 }
 
+export interface PaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  total_pages: number;
+  has_next: boolean;
+  has_prev: boolean;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
@@ -67,14 +76,7 @@ export interface ApiResponse<T> {
   error?: string | null;
   meta?: {
     timestamp: string;
-    pagination?: {
-      page: number;
-      limit: number;
-      total: number;
-      total_pages: number;
-      has_next: boolean;
-      has_prev: boolean;
-    };
+    pagination?: PaginationMeta;
   };
 }
 
@@ -168,20 +170,67 @@ function formatOpenTime(openTime?: string, closeTime?: string): string {
 }
 
 // API Functions
+export interface FetchRestaurantsParams {
+  limit?: number;
+  page?: number;
+  search?: string;
+  cuisine?: string;
+  price_level?: number;
+  rating?: number;
+  sort_by?: "rating" | "price" | "name";
+  sort_order?: "asc" | "desc";
+}
+
+export async function fetchRestaurantsPage(
+  params: FetchRestaurantsParams = {},
+): Promise<{ restaurants: Restaurant[]; pagination: PaginationMeta | null }> {
+  const {
+    limit = 24,
+    page = 1,
+    search,
+    cuisine,
+    price_level,
+    rating,
+    sort_by,
+    sort_order,
+  } = params;
+
+  const qs = new URLSearchParams();
+  qs.set("limit", String(limit));
+  qs.set("page", String(page));
+
+  const trimmedSearch = (search || "").trim();
+  if (trimmedSearch) qs.set("search", trimmedSearch);
+
+  const trimmedCuisine = (cuisine || "").trim();
+  if (trimmedCuisine) qs.set("cuisine", trimmedCuisine);
+
+  if (typeof price_level === "number" && price_level > 0) qs.set("price_level", String(price_level));
+  if (typeof rating === "number") qs.set("rating", String(rating));
+  if (sort_by) qs.set("sort_by", sort_by);
+  if (sort_order) qs.set("sort_order", sort_order);
+
+  const response = await fetch(`${API_URL}/restaurants?${qs.toString()}`);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const result: ApiResponse<ApiRestaurant[]> = await response.json();
+  if (result.success && Array.isArray(result.data)) {
+    return {
+      restaurants: result.data.map(mapApiRestaurantToFrontend),
+      pagination: result.meta?.pagination ?? null,
+    };
+  }
+
+  console.error("API returned unexpected format:", result);
+  return { restaurants: [], pagination: result.meta?.pagination ?? null };
+}
+
 export async function fetchRestaurants(limit: number = 100, page: number = 1): Promise<Restaurant[]> {
   try {
-    const response = await fetch(`${API_URL}/restaurants?limit=${limit}&page=${page}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const result: ApiResponse<ApiRestaurant[]> = await response.json();
-    
-    if (result.success && Array.isArray(result.data)) {
-      return result.data.map(mapApiRestaurantToFrontend);
-    }
-    
-    console.error('API returned unexpected format:', result);
-    return [];
+    const { restaurants } = await fetchRestaurantsPage({ limit, page });
+    return restaurants;
   } catch (error) {
     console.error('Error fetching restaurants:', error);
     return [];
@@ -192,16 +241,9 @@ export async function fetchAllRestaurants(limit: number = 100): Promise<Restaura
   const collected: Restaurant[] = [];
   let page = 1;
   for (let i = 0; i < 1000; i += 1) {
-    const response = await fetch(`${API_URL}/restaurants?limit=${limit}&page=${page}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result: ApiResponse<ApiRestaurant[]> = await response.json();
-    if (!(result.success && Array.isArray(result.data))) break;
-    collected.push(...result.data.map(mapApiRestaurantToFrontend));
-
-    const pagination = result.meta?.pagination;
+    const { restaurants, pagination } = await fetchRestaurantsPage({ limit, page });
+    if (!restaurants.length) break;
+    collected.push(...restaurants);
     if (!pagination?.has_next) break;
     page += 1;
   }

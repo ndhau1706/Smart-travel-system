@@ -12,28 +12,10 @@ import {
 } from "../../components/ui/pagination";
 import { ScrollArea } from "../../components/ui/scroll-area";
 import { Search, Filter, X, ChevronLeft, ChevronRight } from "lucide-react";
-
-interface Restaurant {
-  id: string;
-  name: string;
-  image: string;
-  cuisine: string;
-  rating: number;
-  reviewCount: number;
-  priceLevel: number;
-  distance: string;
-  openTime: string;
-  specialty: string[];
-  description: string;
-  address: string;
-  phone: string;
-  menu: any[];
-}
+import { fetchRestaurantsPage, PaginationMeta, Restaurant } from "../../services/api";
 
 interface RestaurantListProps {
-  restaurants: Restaurant[];
   onSelectRestaurant: (restaurant: Restaurant) => void;
-  isLoading?: boolean;
 }
 
 const cuisineFilters = [
@@ -56,42 +38,63 @@ const priceFilters = [
   { label: "$$$", value: 3 },
 ];
 
-export function RestaurantList({ restaurants, onSelectRestaurant, isLoading = false }: RestaurantListProps) {
+export function RestaurantList({ onSelectRestaurant }: RestaurantListProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedCuisine, setSelectedCuisine] = useState("");
   const [selectedPrice, setSelectedPrice] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-
-  const filteredRestaurants = restaurants.filter((restaurant) => {
-    const searchLower = searchQuery.toLowerCase();
-    const matchesSearch = searchQuery === "" ||
-      restaurant.name.toLowerCase().includes(searchLower) ||
-      restaurant.cuisine.toLowerCase().includes(searchLower) ||
-      restaurant.specialty.some((s) => s.toLowerCase().includes(searchLower));
-
-    const matchesCuisine = selectedCuisine === "" ||
-      restaurant.specialty.some((s) => s.toLowerCase().includes(selectedCuisine.toLowerCase()));
-
-    const matchesPrice = selectedPrice === 0 || restaurant.priceLevel === selectedPrice;
-
-    return matchesSearch && matchesCuisine && matchesPrice;
-  });
+  const [remoteRestaurants, setRemoteRestaurants] = useState<Restaurant[]>([]);
+  const [pagination, setPagination] = useState<PaginationMeta | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const pageSize = 24;
-  const totalPages = Math.max(1, Math.ceil(filteredRestaurants.length / pageSize));
+  const totalPages = pagination?.total_pages ?? 1;
+  const total = pagination?.total ?? 0;
 
   useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, selectedCuisine, selectedPrice, restaurants.length]);
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery.trim());
+      setCurrentPage(1);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   useEffect(() => {
-    setCurrentPage((p) => Math.min(Math.max(1, p), totalPages));
-  }, [totalPages]);
+    let cancelled = false;
 
-  const pagedRestaurants = useMemo(() => {
-    const start = (currentPage - 1) * pageSize;
-    return filteredRestaurants.slice(start, start + pageSize);
-  }, [filteredRestaurants, currentPage]);
+    const load = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const { restaurants: data, pagination: meta } = await fetchRestaurantsPage({
+          limit: pageSize,
+          page: currentPage,
+          search: debouncedSearch || undefined,
+          cuisine: selectedCuisine || undefined,
+          price_level: selectedPrice || undefined,
+        });
+
+        if (cancelled) return;
+        setRemoteRestaurants(data);
+        setPagination(meta);
+      } catch (err) {
+        if (cancelled) return;
+        const message = err instanceof Error ? err.message : "Không thể tải danh sách nhà hàng";
+        setError(message);
+        setRemoteRestaurants([]);
+        setPagination(null);
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    };
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [currentPage, debouncedSearch, selectedCuisine, selectedPrice]);
 
   const pageItems = useMemo(() => {
     if (totalPages <= 7) {
@@ -116,9 +119,10 @@ export function RestaurantList({ restaurants, onSelectRestaurant, isLoading = fa
   const hasActiveFilters = selectedCuisine !== "" || selectedPrice !== 0 || searchQuery !== "";
 
   const clearFilters = () => {
+    setSearchQuery("");
+    setDebouncedSearch("");
     setSelectedCuisine("");
     setSelectedPrice(0);
-    setSearchQuery("");
     setCurrentPage(1);
   };
 
@@ -181,7 +185,10 @@ export function RestaurantList({ restaurants, onSelectRestaurant, isLoading = fa
                   {cuisineFilters.map((cuisine) => (
                     <Badge
                       key={cuisine.value}
-                      onClick={() => setSelectedCuisine(cuisine.value)}
+                      onClick={() => {
+                        setSelectedCuisine(cuisine.value);
+                        setCurrentPage(1);
+                      }}
                       className={`cursor-pointer transition-all rounded-full ${
                         selectedCuisine === cuisine.value
                           ? "bg-gradient-to-r from-pink-400 to-rose-400 text-white border-pink-500"
@@ -206,7 +213,10 @@ export function RestaurantList({ restaurants, onSelectRestaurant, isLoading = fa
                   {priceFilters.map((price) => (
                     <Badge
                       key={price.value}
-                      onClick={() => setSelectedPrice(price.value)}
+                      onClick={() => {
+                        setSelectedPrice(price.value);
+                        setCurrentPage(1);
+                      }}
                       className={`cursor-pointer transition-all rounded-full ${
                         selectedPrice === price.value
                           ? "bg-gradient-to-r from-pink-400 to-rose-400 text-white border-pink-500"
@@ -232,22 +242,28 @@ export function RestaurantList({ restaurants, onSelectRestaurant, isLoading = fa
               "Đang tải..."
             ) : (
               <>
-                Tìm thấy <span>{filteredRestaurants.length}</span> nhà hàng • Trang{" "}
+                Tìm thấy <span>{total}</span> nhà hàng • Trang{" "}
                 <span>{currentPage}</span>/<span>{totalPages}</span>
               </>
             )}
           </div>
 
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 rounded-2xl p-4">
+              {error}
+            </div>
+          )}
+
           {/* Restaurant Grid */}
-          {isLoading ? (
+          {isLoading && remoteRestaurants.length === 0 ? (
             <div className="text-center py-12">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-pink-300 border-t-pink-600"></div>
               <p className="text-pink-600 text-lg mt-4">Đang tải danh sách nhà hàng...</p>
             </div>
-          ) : filteredRestaurants.length > 0 ? (
+          ) : remoteRestaurants.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-6">
-                {pagedRestaurants.map((restaurant) => (
+                {remoteRestaurants.map((restaurant) => (
                 <RestaurantCard
                   key={restaurant.id}
                   {...restaurant}

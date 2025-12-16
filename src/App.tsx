@@ -32,7 +32,7 @@ import { Toaster } from "./components/ui/sonner";
 import { UtensilsCrossed } from "lucide-react";
 
 // Services & Context
-import { fetchAllRestaurants, fetchRestaurantById, Restaurant as ApiRestaurant } from "./services/api";
+import { fetchRestaurantById, Restaurant as ApiRestaurant } from "./services/api";
 import type { LoginResponse } from "./services/auth";
 import { SidebarProvider, useSidebar } from "./context/SidebarContext";
 
@@ -116,29 +116,12 @@ function RestaurantDetailPage() {
 // Restaurant List Page Wrapper
 function RestaurantListPage() {
   const navigate = useNavigate();
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  
-  useEffect(() => {
-    const loadRestaurants = async () => {
-      setIsLoading(true);
-      try {
-        const data = await fetchAllRestaurants(100);
-        setRestaurants(data);
-      } catch (error) {
-        console.error('Failed to fetch restaurants:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadRestaurants();
-  }, []);
   
   const handleSelectRestaurant = (restaurant: Restaurant) => {
     navigate(`/restaurants/${restaurant.id}`);
   };
   
-  return <RestaurantList restaurants={restaurants} onSelectRestaurant={handleSelectRestaurant} isLoading={isLoading} />;
+  return <RestaurantList onSelectRestaurant={handleSelectRestaurant} />;
 }
 
 // Home Page Wrapper
