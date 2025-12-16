@@ -155,6 +155,27 @@ async def _run_postgres_migrations(engine: AsyncEngine) -> None:
         await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS resend_count INTEGER DEFAULT 0"))
         await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW()"))
         await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW()"))
+        # Some older deployments used code VARCHAR(6). We store a SHA256 hex hash (64 chars),
+        # so widen the column when needed.
+        await conn.execute(
+            text(
+                """
+                DO $$
+                DECLARE maxlen integer;
+                DECLARE dtype text;
+                BEGIN
+                    SELECT character_maximum_length, data_type
+                    INTO maxlen, dtype
+                    FROM information_schema.columns
+                    WHERE table_name = 'email_otps' AND column_name = 'code';
+
+                    IF dtype = 'character varying' AND maxlen IS NOT NULL AND maxlen < 128 THEN
+                        EXECUTE 'ALTER TABLE email_otps ALTER COLUMN code TYPE VARCHAR(128)';
+                    END IF;
+                END$$;
+                """
+            )
+        )
         await conn.execute(text("CREATE INDEX IF NOT EXISTS ix_email_otps_email_purpose ON email_otps (email, purpose)"))
 
         # Restaurants ownership + rating override
