@@ -92,6 +92,51 @@ async def run_migrations(engine: AsyncEngine) -> None:
 
 async def _run_postgres_migrations(engine: AsyncEngine) -> None:
     async with engine.begin() as conn:
+        # OTP storage (email_otps)
+        # Ensure enum type exists (SQLAlchemy creates this on fresh installs).
+        await conn.execute(
+            text(
+                """
+                DO $$
+                BEGIN
+                    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'otppurpose') THEN
+                        CREATE TYPE otppurpose AS ENUM ('REGISTER', 'RESET_PASSWORD');
+                    END IF;
+                END$$;
+                """
+            )
+        )
+        # Ensure table exists (create_all won't modify existing schema).
+        await conn.execute(
+            text(
+                """
+                CREATE TABLE IF NOT EXISTS email_otps (
+                    id VARCHAR(36) PRIMARY KEY,
+                    email VARCHAR(255) NOT NULL,
+                    purpose otppurpose NOT NULL,
+                    code_hash VARCHAR(128),
+                    payload_json TEXT,
+                    expires_at TIMESTAMPTZ,
+                    attempts INTEGER DEFAULT 0,
+                    resend_window_started_at TIMESTAMPTZ,
+                    resend_count INTEGER DEFAULT 0,
+                    created_at TIMESTAMPTZ DEFAULT NOW(),
+                    updated_at TIMESTAMPTZ DEFAULT NOW()
+                );
+                """
+            )
+        )
+        # Add missing columns if the table already existed with an older schema.
+        await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS code_hash VARCHAR(128)"))
+        await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS payload_json TEXT"))
+        await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ"))
+        await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS attempts INTEGER DEFAULT 0"))
+        await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS resend_window_started_at TIMESTAMPTZ"))
+        await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS resend_count INTEGER DEFAULT 0"))
+        await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW()"))
+        await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW()"))
+        await conn.execute(text("CREATE INDEX IF NOT EXISTS ix_email_otps_email_purpose ON email_otps (email, purpose)"))
+
         # Restaurants ownership + rating override
         await conn.execute(text("ALTER TABLE restaurants ADD COLUMN IF NOT EXISTS owner_id VARCHAR(36)"))
         await conn.execute(text("ALTER TABLE restaurants ADD COLUMN IF NOT EXISTS rating_override DOUBLE PRECISION"))
@@ -185,6 +230,48 @@ async def _run_postgres_migrations(engine: AsyncEngine) -> None:
 async def _run_sqlite_migrations(engine: AsyncEngine) -> None:
     # SQLite doesn't support IF NOT EXISTS for ADD COLUMN; check columns first.
     async with engine.begin() as conn:
+        # OTP storage (email_otps)
+        result = await conn.execute(text("PRAGMA table_info(email_otps)"))
+        columns = {row[1] for row in result.fetchall()}
+        if not columns:
+            await conn.execute(
+                text(
+                    """
+                    CREATE TABLE IF NOT EXISTS email_otps (
+                        id VARCHAR(36) PRIMARY KEY,
+                        email VARCHAR(255) NOT NULL,
+                        purpose VARCHAR(50) NOT NULL,
+                        code_hash VARCHAR(128),
+                        payload_json TEXT,
+                        expires_at DATETIME,
+                        attempts INTEGER DEFAULT 0,
+                        resend_window_started_at DATETIME,
+                        resend_count INTEGER DEFAULT 0,
+                        created_at DATETIME,
+                        updated_at DATETIME
+                    )
+                    """
+                )
+            )
+        else:
+            if "code_hash" not in columns:
+                await conn.execute(text("ALTER TABLE email_otps ADD COLUMN code_hash VARCHAR(128)"))
+            if "payload_json" not in columns:
+                await conn.execute(text("ALTER TABLE email_otps ADD COLUMN payload_json TEXT"))
+            if "expires_at" not in columns:
+                await conn.execute(text("ALTER TABLE email_otps ADD COLUMN expires_at DATETIME"))
+            if "attempts" not in columns:
+                await conn.execute(text("ALTER TABLE email_otps ADD COLUMN attempts INTEGER DEFAULT 0"))
+            if "resend_window_started_at" not in columns:
+                await conn.execute(text("ALTER TABLE email_otps ADD COLUMN resend_window_started_at DATETIME"))
+            if "resend_count" not in columns:
+                await conn.execute(text("ALTER TABLE email_otps ADD COLUMN resend_count INTEGER DEFAULT 0"))
+            if "created_at" not in columns:
+                await conn.execute(text("ALTER TABLE email_otps ADD COLUMN created_at DATETIME"))
+            if "updated_at" not in columns:
+                await conn.execute(text("ALTER TABLE email_otps ADD COLUMN updated_at DATETIME"))
+        await conn.execute(text("CREATE INDEX IF NOT EXISTS ix_email_otps_email_purpose ON email_otps (email, purpose)"))
+
         result = await conn.execute(text("PRAGMA table_info(restaurants)"))
         columns = {row[1] for row in result.fetchall()}
         if "owner_id" not in columns:
