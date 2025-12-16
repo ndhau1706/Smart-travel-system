@@ -27,7 +27,8 @@ class EmailOtp(Base):
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     email = Column(String(255), index=True, nullable=False)
     purpose = Column(Enum(OtpPurpose), index=True, nullable=False)
-    code_hash = Column(String(128), nullable=False)
+    # Keep DB column name as `code` for backwards compatibility with existing schema.
+    code_hash = Column("code", String(128), nullable=False)
     payload_json = Column(Text, nullable=True)
 
     expires_at = Column(DateTime, nullable=False)

@@ -114,7 +114,7 @@ async def _run_postgres_migrations(engine: AsyncEngine) -> None:
                     id VARCHAR(36) PRIMARY KEY,
                     email VARCHAR(255) NOT NULL,
                     purpose otppurpose NOT NULL,
-                    code_hash VARCHAR(128),
+                    code VARCHAR(128),
                     payload_json TEXT,
                     expires_at TIMESTAMPTZ,
                     attempts INTEGER DEFAULT 0,
@@ -126,8 +126,28 @@ async def _run_postgres_migrations(engine: AsyncEngine) -> None:
                 """
             )
         )
+        # Support older/newer schemas: rename `code_hash` -> `code` if needed.
+        await conn.execute(
+            text(
+                """
+                DO $$
+                BEGIN
+                    IF EXISTS (
+                        SELECT 1 FROM information_schema.columns
+                        WHERE table_name = 'email_otps' AND column_name = 'code_hash'
+                    ) AND NOT EXISTS (
+                        SELECT 1 FROM information_schema.columns
+                        WHERE table_name = 'email_otps' AND column_name = 'code'
+                    ) THEN
+                        ALTER TABLE email_otps RENAME COLUMN code_hash TO code;
+                    END IF;
+                END$$;
+                """
+            )
+        )
+
         # Add missing columns if the table already existed with an older schema.
-        await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS code_hash VARCHAR(128)"))
+        await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS code VARCHAR(128)"))
         await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS payload_json TEXT"))
         await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ"))
         await conn.execute(text("ALTER TABLE email_otps ADD COLUMN IF NOT EXISTS attempts INTEGER DEFAULT 0"))
@@ -241,7 +261,7 @@ async def _run_sqlite_migrations(engine: AsyncEngine) -> None:
                         id VARCHAR(36) PRIMARY KEY,
                         email VARCHAR(255) NOT NULL,
                         purpose VARCHAR(50) NOT NULL,
-                        code_hash VARCHAR(128),
+                        code VARCHAR(128),
                         payload_json TEXT,
                         expires_at DATETIME,
                         attempts INTEGER DEFAULT 0,
@@ -254,8 +274,8 @@ async def _run_sqlite_migrations(engine: AsyncEngine) -> None:
                 )
             )
         else:
-            if "code_hash" not in columns:
-                await conn.execute(text("ALTER TABLE email_otps ADD COLUMN code_hash VARCHAR(128)"))
+            if "code" not in columns:
+                await conn.execute(text("ALTER TABLE email_otps ADD COLUMN code VARCHAR(128)"))
             if "payload_json" not in columns:
                 await conn.execute(text("ALTER TABLE email_otps ADD COLUMN payload_json TEXT"))
             if "expires_at" not in columns:
