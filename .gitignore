@@ -1,0 +1,44 @@
+node_modules
+build/
+dist/
+
+# Editor/OS artifacts
+.vscode/
+.idea/
+.DS_Store
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+backend/.env
+backend_service.json
+.secrets/
+
+# Virtualenv and caches
+venv/
+backend/.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Databases and logs
+backend/smart_travel.db
+*.sqlite3
+*.log
+logs/
+backend/places_restaurants.json
+backend/places_photo_index.json
+
+# Coverage / test artifacts
+coverage/
+htmlcov/
+.mypy_cache/
+.pytest_cache/
+
+# Private / not published on GitHub
+backend/
+Data Restaurants/
+deploy-gcp.ps1

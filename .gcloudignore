@@ -1,0 +1,21 @@
+# Keep Cloud Build uploads small for frontend image builds (Dockerfile in this dir).
+
+# VCS / local tooling
+.git/
+.vscode/
+.idea/
+
+# Dependencies / caches
+node_modules/
+dist/
+build/
+
+# Secrets
+.secrets/
+.env
+.env.*
+
+# Backend + datasets are not needed for frontend container
+backend/
+Data Restaurants/
+
