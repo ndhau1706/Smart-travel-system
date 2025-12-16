@@ -43,7 +43,7 @@ export function Navigation() {
             </div>
             {!isCollapsed && (
               <div>
-                <h1 className="text-pink-800 text-lg font-bold">Smart Travel</h1>
+                <h1 className="text-pink-800 text-lg font-bold">Food Assistant</h1>
                 <p className="text-pink-500 text-xs">Khám phá ẩm thực</p>
               </div>
             )}
@@ -75,14 +75,14 @@ export function Navigation() {
           <Button
             variant="ghost"
             onClick={toggleCollapsed}
-            className="w-full justify-center rounded-xl text-pink-600 hover:bg-pink-100"
+            className="w-full justify-center rounded-xl text-pink-600 hover:bg-pink-100 font-bold"
             size="sm"
           >
             {isCollapsed ? (
               <ChevronRight className="h-5 w-5" />
             ) : (
               <>
-                <ChevronLeft className="h-5 w-5 mr-2" />
+                <ChevronLeft className="h-5 w-5" />
                 <span>Thu gọn</span>
               </>
             )}
@@ -112,8 +112,8 @@ export function Navigation() {
                   🍜
                 </div>
                 <div>
-                  <h1 className="text-pink-800 text-lg font-bold">Smart Travel</h1>
-                  <p className="text-pink-500 text-xs">Khám phá ẩm thực</p>
+                  <h1 className="text-pink-800 text-lg font-bold">Food Assistant</h1>
+                  <p className="text-pink-600 text-xs">Khám phá ẩm thực</p>
                 </div>
               </Link>
               {navItems.map((item) => (

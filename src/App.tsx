@@ -346,8 +346,8 @@ function AppContent() {
   const location = useLocation();
   const { isCollapsed } = useSidebar();
 
-  const handleLogin = (email: string, name: string) => {
-    setUser({ email, name });
+  const handleLogin = (payload: { user: { email: string; name: string } }) => {
+    setUser({ email: payload.user.email, name: payload.user.name });
   };
 
   const handleLogout = () => {
@@ -377,7 +377,7 @@ function AppContent() {
           style={{ boxShadow: "0 0 20px rgba(255,182,193,0.5)" }}
         >
           <LogIn className="h-4 w-4" />
-          <span className="hidden sm:inline">Đăng nhập</span>
+          <span className="hidden sm:inline font-bold">ĐĂNG NHẬP</span>
         </Button>
       )}
 

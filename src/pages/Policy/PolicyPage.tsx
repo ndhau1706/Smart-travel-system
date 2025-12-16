@@ -23,7 +23,7 @@ export function PolicyPage() {
             <h1 className="bg-gradient-to-r from-pink-600 via-rose-600 to-fuchsia-600 bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(255,182,193,0.4)]">
               Chính sách & Điều khoản
             </h1>
-            <p className="text-pink-700">
+            <p className="text-pink-700 text-lg max-w-3xl mx-auto">
               Cập nhật lần cuối: 08 tháng 12, 2025
             </p>
           </div>
@@ -40,7 +40,7 @@ export function PolicyPage() {
               >
                 <Lock className="h-6 w-6 text-white" />
               </div>
-              <h2 className="text-pink-800">Chính sách bảo mật</h2>
+              <h2 className="text-pink-800 font-bold">CHÍNH SÁCH BẢO MẬT</h2>
             </div>
             <div className="space-y-4 text-gray-700 text-ju">
               <div>
@@ -69,7 +69,7 @@ export function PolicyPage() {
               </div>
               <div>
                 <h3 className="font-bold text-pink-700 mb-2">3. Cam kết bảo mật</h3>
-                <ul className="list-disc list-inside ml-4 mt-2 space-y-1">
+                <ul className="list-disc list-inside ml-4 mt-2 space-y-1 text-ju">
                 <li>Mật khẩu của bạn được mã hóa một chiều (Hashing) trước khi lưu vào cơ sở dữ liệu, đảm bảo không ai (kể cả quản trị viên) có thể nhìn thấy</li>
                 <li>Chúng tôi cam kết không chia sẻ, bán hoặc trao đổi thông tin cá nhân của bạn cho bất kỳ bên thứ ba nào vì mục đích thương mại</li>
                 </ul>
@@ -89,7 +89,7 @@ export function PolicyPage() {
               >
                 <FileText className="h-6 w-6 text-white" />
               </div>
-              <h2 className="text-pink-800">Điều khoản sử dụng</h2>
+              <h2 className="text-pink-800 font-bold">ĐIỀU KHOẢN SỬ DỤNG</h2>
             </div>
             <div className="space-y-4 text-gray-700">
               <div>
@@ -100,7 +100,7 @@ export function PolicyPage() {
               </div>
               <div>
                 <h3 className="font-bold text-pink-700 mb-2">2. Tài khoản và Bảo mật</h3>
-                <ul className="list-disc list-inside ml-4 mt-2 space-y-1">
+                <ul className="list-disc list-inside ml-4 mt-2 space-y-1 text-ju">
                 <li> Bạn chịu trách nhiệm bảo mật thông tin đăng nhập của mình</li>
                 <li> Hệ thống sử dụng xác thực qua Email và OTP. Bạn cần cung cấp email thật để kích hoạt tài khoản</li>
                 <li> Hệ thống có cơ chế giới hạn đăng nhập (Rate Limiting) để bảo vệ tài khoản khỏi các cuộc tấn công dò mật khẩu</li>
@@ -111,7 +111,7 @@ export function PolicyPage() {
                 <p>
                 Khi sử dụng Food Journey Assistant, bạn đồng ý và cam kết:
                 </p>
-                <ul className="list-disc list-inside ml-4 mt-2 space-y-1">
+                <ul className="list-disc list-inside ml-4 mt-2 space-y-1 text-ju">
                   <li><strong>Sử dụng văn minh:</strong> Không sử dụng ngôn từ thô tục, kích động, xúc phạm hoặc các nội dung vi phạm pháp luật Việt Nam khi tương tác với Chatbot hoặc viết đánh giá</li>
                   <li><strong>Không gian lận:</strong> Không thực hiện các hành vi gian lận như spam đánh giá (seeding), sử dụng công cụ tự động để thao túng thứ hạng quán ăn, hoặc cố tình phá hoại uy tín của nhà hàng/đối thủ cạnh tranh</li>
                   <li><strong>Bảo vệ tài khoản:</strong> Tự bảo quản mật khẩu và mã OTP. Thông báo ngay cho chúng tôi nếu phát hiện tài khoản bị truy cập trái phép.</li>
@@ -122,7 +122,7 @@ export function PolicyPage() {
                 <p>
                 Với vai trò là đơn vị phát triển và vận hành nền tảng, chúng tôi cam kết:
                 </p>
-                <ul className="list-disc list-inside ml-4 mt-2 space-y-1">
+                <ul className="list-disc list-inside ml-4 mt-2 space-y-1 text-ju">
                   <li><strong>Duy trì hoạt động:</strong> Nỗ lực đảm bảo hệ thống hoạt động ổn định 24/7 để phục vụ nhu cầu tra cứu của bạn (ngoại trừ các trường hợp bảo trì đã thông báo trước hoặc sự cố bất khả kháng)</li>
                   <li><strong>Bảo vệ dữ liệu:</strong> Áp dụng các biện pháp kỹ thuật (như mã hóa mật khẩu, bảo mật 2 lớp) để bảo vệ thông tin cá nhân của bạn khỏi các truy cập trái phép</li>
                   <li><strong>Trung lập & Khách quan:</strong> Đảm bảo các thuật toán gợi ý và xếp hạng quán ăn hoạt động công bằng, không thiên vị hoặc nhận tiền để ưu tiên (trừ các vị trí quảng cáo được đánh dấu rõ ràng)</li>
@@ -144,14 +144,13 @@ export function PolicyPage() {
               >
                 <Eye className="h-6 w-6 text-white" />
               </div>
-              <h2 className="text-pink-800">Chính sách Cookie & Công nghệ lưu trữ</h2>
+              <h2 className="text-pink-800 font-bold">CHÍNH SÁCH COOKIE VÀ CÔNG NGHỆ LƯU TRỮ</h2>
             </div>
             <div className="space-y-4 text-gray-700 text-ju">
               <div>
                 <h3 className="font-bold text-pink-700 mb-2">1. Giới thiệu chung</h3>
                 <p>
                   Để đảm bảo Food Journey Assistant vận hành trơn tru, bảo mật và mang lại trải nghiệm cá nhân hóa tốt nhất, chúng tôi sử dụng các công nghệ lưu trữ dữ liệu trên trình duyệt (Browser Storage) bao gồm Cookie và Local Storage.
-                  <br/>
                   <br/>
                   Vì nền tảng của chúng tôi được xây dựng theo kiến trúc Single Page Application (SPA) hiện đại, chúng tôi ưu tiên sử dụng Local Storage để lưu trữ dữ liệu phiên làm việc thay vì Cookie truyền thống, giúp tăng tốc độ tải trang và bảo mật tốt hơn.
                 </p>
@@ -176,12 +175,13 @@ export function PolicyPage() {
 
           {/* Contact for Policy */}
           <Card
-            className="bg-gradient-to-r from-pink-400 via-rose-400 to-fuchsia-400 border-2 border-pink-300 rounded-3xl p-8 text-center shadow-2xl"
+            className="bg-gradient-to-r from-pink-400 via-rose-400 to-fuchsia-400 border-2 border-pink-300 rounded-3xl p-8 md:p-12 text-center shadow-2xl"
             style={{ boxShadow: "0 0 40px rgba(255,182,193,0.5)" }}
           >
-            <h2 className="text-white mb-2">CÂU HỎI VỀ CHÍNH SÁCH</h2>
+            <h2 className="text-white font-bold">CÂU HỎI VỀ CHÍNH SÁCH</h2>
             <p className="text-white/90 text-lg max-w-3xl mx-auto text-ju">
-            Nếu bạn có bất kỳ thắc mắc hoặc cần hỗ trợ liên quan đến Chính sách & Điều khoản, vui lòng liên hệ với chúng tôi qua email: <strong>habi@...</strong>
+              Nếu bạn có bất kỳ thắc mắc hoặc cần hỗ trợ liên quan đến Chính sách & Điều khoản, vui lòng liên hệ với chúng tôi qua email:{" "}
+              <strong>habiassistant@gmail.com</strong>
             </p>
           </Card>
         </div>

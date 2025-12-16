@@ -50,14 +50,14 @@ export function RestaurantCard({
         </div>
       </div>
 
-      <div className="p-5 space-y-3">
-        <div>
-          <h3 className="text-gray-900 mb-1 group-hover:text-pink-600 transition-colors">
+      <div className="pl-4 pr-1 py-1 space-y-4">
+        <div className="space-y-1">
+          <h3 className="text-gray-900 group-hover:text-pink-600 transition-colors">
             {name}
           </h3>
           <p className="text-pink-600 text-sm">{cuisine}</p>
         </div>
-
+        
         <div className="flex flex-wrap gap-2">
           {specialty.slice(0, 3).map((item, idx) => (
             <Badge
@@ -70,17 +70,23 @@ export function RestaurantCard({
           ))}
         </div>
 
-        <div className="flex items-center gap-4 text-sm text-gray-600">
+        <div className="flex items-center gap-3 text-sm text-gray-600 pb-2">
           <div className="flex items-center gap-1">
-            <DollarSign className="h-4 w-4 text-pink-500" />
+            <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
+              <DollarSign className="h-4 w-4 text-pink-500" />
+            </div>
             <span>{"$".repeat(priceLevel)}</span>
           </div>
           <div className="flex items-center gap-1">
-            <MapPin className="h-4 w-4 text-pink-500" />
+            <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
+              <MapPin className="h-4 w-4 text-pink-500" />
+            </div>
             <span>{distance}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Clock className="h-4 w-4 text-pink-500" />
+            <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
+              <Clock className="h-4 w-4 text-pink-500" />
+            </div>
             <span>{openTime}</span>
           </div>
         </div>
