@@ -13,17 +13,13 @@ COPY app/ ./app/
 COPY main.py .
 COPY *.py ./
 
-# Copy JSON file for seeding
-COPY hcm_restaurants_with_local_images.json /app/hcm_restaurants_with_local_images.json
-
-# Copy valid image names for filtering
-COPY valid_image_names.json /app/valid_image_names.json
-
-# Copy indexes for multiple images + Google reviews import
-COPY places_photo_index.json /app/places_photo_index.json
-COPY places_reviews_index.json /app/places_reviews_index.json
-
-# DO NOT copy smart_travel.db - let the app create fresh database with new schema (author_name column)
+# Optional datasets are intentionally NOT copied (they may be large and/or contain API keys).
+# Admin endpoints will gracefully report missing files if you haven't provided them.
+# Example optional files:
+# - hcm_restaurants_with_local_images.json
+# - valid_image_names.json
+# - places_photo_index.json
+# - places_reviews_index.json
 
 # Expose port
 EXPOSE 8080
