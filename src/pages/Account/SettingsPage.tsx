@@ -77,8 +77,8 @@ export function SettingsPage() {
 
         <Card className="bg-gradient-to-br from-pink-50/90 via-purple-50/90 to-fuchsia-50/90 backdrop-blur-xl border-2 border-pink-200 rounded-3xl shadow-2xl">
           <CardHeader className="border-b border-pink-200/60">
-            <CardTitle className="text-pink-800 flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5 text-pink-500" />
+            <CardTitle className="text-pink-800 font-bold flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-pink-600" />
               Bảo mật
             </CardTitle>
           </CardHeader>
@@ -99,7 +99,7 @@ export function SettingsPage() {
               <form onSubmit={savePassword} className="space-y-4">
                 <div className="space-y-2">
                   <Label className="text-pink-700 flex items-center gap-2">
-                    <Lock className="h-4 w-4 text-pink-400" />
+                    <Lock className="h-4 w-4 text-pink-600" />
                     Mật khẩu hiện tại
                   </Label>
                   <Input
@@ -109,7 +109,7 @@ export function SettingsPage() {
                       setPwd((prev) => ({ ...prev, current: e.target.value }))
                     }
                     placeholder="••••••••"
-                    className="bg-white/80 border-2 border-pink-300 focus:border-pink-400 rounded-2xl"
+                    className=" placeholder:text-gray-700 bg-white/80 border-2 border-pink-300 focus:border-pink-400 rounded-2xl"
                     autoComplete="current-password"
                   />
                 </div>
@@ -127,7 +127,7 @@ export function SettingsPage() {
                         setPwd((prev) => ({ ...prev, next: e.target.value }))
                       }
                       placeholder="Tối thiểu 6 ký tự"
-                      className="bg-white/80 border-2 border-pink-300 focus:border-pink-400 rounded-2xl"
+                      className="bg-white/80 border-2 border-pink-300 focus:border-pink-400 rounded-2xl placeholder:text-gray-700"
                       autoComplete="new-password"
                     />
                   </div>
@@ -141,7 +141,7 @@ export function SettingsPage() {
                         setPwd((prev) => ({ ...prev, confirm: e.target.value }))
                       }
                       placeholder="Nhập lại mật khẩu mới"
-                      className="bg-white/80 border-2 border-pink-300 focus:border-pink-400 rounded-2xl"
+                      className="bg-white/80 border-2 border-pink-300 focus:border-pink-400 rounded-2xl placeholder:text-gray-700"
                       autoComplete="new-password"
                     />
                   </div>
@@ -153,7 +153,7 @@ export function SettingsPage() {
                   className="bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white rounded-2xl shadow-xl border-2 border-pink-200"
                   style={{ boxShadow: "0 0 20px rgba(255,182,193,0.5)" }}
                 >
-                  {savingPwd ? "Đang đổi..." : "Đổi mật khẩu"}
+                  {savingPwd ? "Đang đổi..." : "ĐỔI MẬT KHẨU"}
                 </Button>
               </form>
             )}

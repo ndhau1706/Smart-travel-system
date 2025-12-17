@@ -49,8 +49,8 @@ export function Navigation({ user, onLoginClick, onLogout }: NavigationProps) {
             </div>
             {!isCollapsed && (
               <div>
-                <h1 className="text-pink-800 text-lg font-bold">Smart Travel</h1>
-                <p className="text-pink-500 text-xs">Khám phá ẩm thực</p>
+                <h1 className="text-pink-800 text-lg font-bold">Food Assistant</h1>
+                <p className="text-pink-600 text-xs">Khám phá ẩm thực</p>
               </div>
             )}
           </div>
@@ -153,7 +153,7 @@ export function Navigation({ user, onLoginClick, onLogout }: NavigationProps) {
                   🍜
                 </div>
                 <div>
-                  <h1 className="text-pink-800 text-lg font-bold">Smart Travel</h1>
+                  <h1 className="text-pink-800 text-lg font-bold">Food Assistant</h1>
                   <p className="text-pink-500 text-xs">Khám phá ẩm thực</p>
                 </div>
               </Link>

@@ -240,7 +240,7 @@ function ChatbotPage() {
   };
 
   return (
-    <div className="flex h-full w-full">
+    <div className="flex h-screen w-full">
       {/* Chat History Sidebar - synced with Navigation */}
       <ChatSidebar
         chats={chats}
@@ -251,7 +251,7 @@ function ChatbotPage() {
       />
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0 relative">
+      <div className="flex-1 flex flex-col min-w-0 relative h-screen">
         {currentChat ? (
           <>
             <ScrollArea className="flex-1" ref={scrollAreaRef}>
@@ -273,7 +273,7 @@ function ChatbotPage() {
                       <h1 className="bg-gradient-to-r from-pink-600 via-rose-600 to-fuchsia-600 bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(255,182,193,0.4)]">
                         🍜 Trợ Lý Ẩm Thực AI 🥢
                       </h1>
-                      <p className="text-pink-700 drop-shadow-[0_1px_4px_rgba(255,182,193,0.3)]">
+                      <p className="text-pink-700 text-lg max-w-3xl mx-auto">
                         ✨ Hỏi tôi về món ăn Việt Nam và nhận gợi ý nhà hàng tuyệt vời! ✨
                       </p>
                     </div>
@@ -409,15 +409,15 @@ function AppContent() {
       />
 
       {/* Pastel Pink Galaxy/Nebula Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-pink-200/60 via-purple-200/50 to-fuchsia-200/60" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-pink-300/40 via-transparent to-transparent" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-fuchsia-300/40 via-transparent to-transparent" />
+      <div className="fixed inset-0 bg-gradient-to-br from-pink-200/60 via-purple-200/50 to-fuchsia-200/60 pointer-events-none" />
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-pink-300/40 via-transparent to-transparent pointer-events-none" />
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-fuchsia-300/40 via-transparent to-transparent pointer-events-none" />
 
       {/* Twinkling Pink Stars */}
       {[...Array(50)].map((_, i) => (
         <div
           key={`star-${i}`}
-          className="star"
+          className="star fixed pointer-events-none"
           style={{
             width: Math.random() * 4 + 2 + "px",
             height: Math.random() * 4 + 2 + "px",
@@ -432,13 +432,13 @@ function AppContent() {
       ))}
 
       {/* Floating Food Emojis */}
-      <div className="food-emoji-float absolute top-10 left-20 text-6xl lg:left-72" style={{ animationDuration: "4s" }}>🍜</div>
-      <div className="food-emoji-float absolute top-40 right-32 text-5xl" style={{ animationDuration: "5s", animationDelay: "0.5s" }}>🥖</div>
-      <div className="food-emoji-float absolute bottom-20 left-40 text-5xl lg:left-80" style={{ animationDuration: "4.5s", animationDelay: "1s" }}>🌶️</div>
-      <div className="food-emoji-float absolute bottom-32 right-20 text-6xl" style={{ animationDuration: "5.5s", animationDelay: "1.5s" }}>🥢</div>
-      <div className="food-emoji-float absolute top-1/2 right-10 text-4xl" style={{ animationDuration: "4s", animationDelay: "2s" }}>🍲</div>
-      <div className="food-emoji-float absolute top-1/3 left-1/4 text-5xl" style={{ animationDuration: "4.8s", animationDelay: "0.8s" }}>☕</div>
-      <div className="food-emoji-float absolute bottom-1/4 right-1/3 text-4xl" style={{ animationDuration: "5.2s", animationDelay: "1.2s" }}>🥘</div>
+      <div className="food-emoji-float fixed top-10 left-20 text-6xl lg:left-72 pointer-events-none" style={{ animationDuration: "4s" }}>🍜</div>
+      <div className="food-emoji-float fixed top-40 right-32 text-5xl pointer-events-none" style={{ animationDuration: "5s", animationDelay: "0.5s" }}>🥖</div>
+      <div className="food-emoji-float fixed bottom-20 left-40 text-5xl lg:left-80 pointer-events-none" style={{ animationDuration: "4.5s", animationDelay: "1s" }}>🌶️</div>
+      <div className="food-emoji-float fixed bottom-32 right-20 text-6xl pointer-events-none" style={{ animationDuration: "5.5s", animationDelay: "1.5s" }}>🥢</div>
+      <div className="food-emoji-float fixed top-1/2 right-10 text-4xl pointer-events-none" style={{ animationDuration: "4s", animationDelay: "2s" }}>🍲</div>
+      <div className="food-emoji-float fixed top-1/3 left-1/4 text-5xl pointer-events-none" style={{ animationDuration: "4.8s", animationDelay: "0.8s" }}>☕</div>
+      <div className="food-emoji-float fixed bottom-1/4 right-1/3 text-4xl pointer-events-none" style={{ animationDuration: "5.2s", animationDelay: "1.2s" }}>🥘</div>
 
       {/* Main Content - with left margin for sidebar on desktop */}
       <div className={`flex-1 flex flex-col relative z-10 transition-all duration-300 ${isCollapsed ? "lg:ml-20" : "lg:ml-64"}`}>

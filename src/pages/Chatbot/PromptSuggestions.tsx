@@ -48,7 +48,7 @@ export function PromptSuggestions({ onSelectPrompt }: PromptSuggestionsProps) {
             style={{ boxShadow: '0 0 25px rgba(255,182,193,0.4), inset 0 0 20px rgba(255,255,255,0.4)' }}
             onClick={() => onSelectPrompt(suggestion.prompt)}
           >
-            <div className="flex items-start gap-3">
+            <div className="flex items-center gap-3">
               <div 
                 className={`p-3 rounded-2xl bg-gradient-to-br ${suggestion.gradient} shadow-lg group-hover:scale-125 transition-transform border-2 border-pink-200`}
                 style={{ boxShadow: '0 0 20px rgba(255,182,193,0.5), inset 0 0 10px rgba(255,255,255,0.4)' }}
@@ -56,7 +56,7 @@ export function PromptSuggestions({ onSelectPrompt }: PromptSuggestionsProps) {
                 <span className="text-2xl drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]">{suggestion.emoji}</span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">
+                <p className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors ">
                   {suggestion.prompt}
                 </p>
               </div>

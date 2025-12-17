@@ -90,7 +90,7 @@ export function FloatingChatbot() {
 
   return (
     <Card
-      className={`fixed bottom-3 right-3 z-50 bg-gradient-to-br from-pink-50 via-rose-50 to-fuchsia-50 border-2 border-pink-200 shadow-2xl overflow-hidden transition-all duration-300 ${
+      className={`fixed bottom-3 right-3 z-50 bg-gradient-to-br from-pink-50 via-rose-50 to-fuchsia-50 border-2 border-pink-200 shadow-2xl overflow-hidden transition-all duration-300 text-center ${
         isMinimized ? "h-16" : "h-[500px] sm:h-[550px] md:h-[600px]"
       } w-[calc(100vw-1.5rem)] sm:w-[360px] md:w-[400px] rounded-2xl sm:rounded-3xl`}
       style={{
@@ -99,9 +99,9 @@ export function FloatingChatbot() {
     >
       {/* Header */}
       <div className="flex items-center justify-between p-4 bg-gradient-to-r from-pink-400 to-rose-400 border-b-2 border-pink-300">
-        <div className="flex items-center gap-2">
-          <div className="h-3 w-3 bg-green-400 rounded-full animate-pulse" />
-          <span className="text-white">🤖 Trợ lý ẩm thực AI</span>
+        <div className="h-3 w-3 bg-green-400 rounded-full animate-pulse" />
+        <div className="flex-1 text-center">
+          <span className="text-white font-medium">🤖 TRỢ LÝ ẨM THỰC AI 🤖</span>
         </div>
         <div className="flex gap-2">
           <Button
@@ -129,8 +129,8 @@ export function FloatingChatbot() {
           <ScrollArea className="flex-1 p-3 sm:p-4" ref={scrollAreaRef}>
             {messages.length === 0 ? (
               <div className="space-y-4">
-                <div className="text-center space-y-2 mb-4">
-                  <p className="text-pink-700">
+                <div className="text-center">
+                  <p className="text-pink-600">
                     Xin chào! Tôi là trợ lý AI chuyên về ẩm thực Việt Nam. Tôi có thể giúp bạn tìm món ăn phù hợp!
                   </p>
                 </div>

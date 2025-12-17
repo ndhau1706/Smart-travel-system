@@ -57,8 +57,8 @@ export function ChatSidebar({
           }`}
           size={compact ? "icon" : "default"}
         >
-          <Sparkles className={`h-4 w-4 ${compact ? "" : "mr-2"}`} />
-          {!compact && "New Chat"}
+          <Sparkles className={`h-4 w-4`} />
+          {!compact && "NEW CHAT"}
         </Button>
       </div>
 
@@ -67,7 +67,7 @@ export function ChatSidebar({
         <div className={`space-y-1 ${compact ? "p-1" : "p-2"}`}>
           {chats.length === 0 ? (
             !compact && (
-              <div className="text-center py-8 text-pink-400 text-sm">
+              <div className="text-center py-8 text-pink-600 text-sm">
                 Chưa có cuộc trò chuyện nào
               </div>
             )
@@ -87,7 +87,7 @@ export function ChatSidebar({
               >
                 <MessageSquare
                   className={`h-4 w-4 flex-shrink-0 ${
-                    currentChatId === chat.id ? "text-pink-600" : "text-pink-400"
+                    currentChatId === chat.id ? "text-pink-700" : "text-pink-400"
                   }`}
                 />
                 {!compact && (
@@ -115,7 +115,7 @@ export function ChatSidebar({
                         onDeleteChat(chat.id);
                       }}
                     >
-                      <Trash2 className="h-3.5 w-3.5 text-pink-400 hover:text-red-500" />
+                      <Trash2 className="h-3.5 w-3.5 text-pink-700 hover:text-red-500" />
                     </Button>
                   </>
                 )}
@@ -128,8 +128,8 @@ export function ChatSidebar({
       {/* Footer */}
       {!compact && (
         <div className="p-3 border-t border-pink-200 bg-gradient-to-r from-pink-50 to-rose-50">
-          <div className="text-center text-xs text-pink-500">
-            🍜 Smart Travel AI Assistant
+          <div className="text-center text-xs text-pink-600">
+            🍜 Food Journey Assistant
           </div>
         </div>
       )}

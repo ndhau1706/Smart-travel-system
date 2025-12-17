@@ -17,6 +17,7 @@ interface Restaurant {
   id: string;
   name: string;
   image: string;
+  images: string[];
   cuisine: string;
   rating: number;
   reviewCount: number;

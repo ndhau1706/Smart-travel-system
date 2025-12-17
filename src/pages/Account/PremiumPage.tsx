@@ -28,8 +28,8 @@ export function PremiumPage() {
 
         <Card className="bg-gradient-to-br from-pink-50/90 via-purple-50/90 to-fuchsia-50/90 backdrop-blur-xl border-2 border-pink-200 rounded-3xl shadow-2xl">
           <CardHeader className="border-b border-pink-200/60">
-            <CardTitle className="text-pink-800 flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-pink-500" />
+            <CardTitle className="text-pink-800 font-bold flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-pink-800" />
               Tính năng nâng cao
             </CardTitle>
           </CardHeader>
@@ -42,7 +42,7 @@ export function PremiumPage() {
               onClick={() => navigate("/")}
               className="bg-gradient-to-r from-pink-400 to-rose-400 text-white rounded-2xl border-2 border-pink-200"
             >
-              Về trang chủ
+              VỀ TRANG CHỦ
             </Button>
           </CardContent>
         </Card>

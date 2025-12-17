@@ -422,13 +422,13 @@ export function ProfilePage() {
             style={{ boxShadow: "0 0 20px rgba(255,182,193,0.5)" }}
           >
             <Save className="h-4 w-4" />
-            {saving ? "Đang lưu..." : "Lưu"}
+            {saving ? "Đang lưu..." : "LƯU"}
           </Button>
         </div>
 
         <Card className="bg-gradient-to-br from-pink-50/90 via-purple-50/90 to-fuchsia-50/90 backdrop-blur-xl border-2 border-pink-200 rounded-3xl shadow-2xl">
           <CardHeader className="border-b border-pink-200/60">
-            <CardTitle className="text-pink-800 flex items-center gap-2">
+            <CardTitle className="text-pink-800 font-bold flex items-center gap-2">
               <UserIcon className="h-5 w-5 text-pink-500" />
               Thông tin cá nhân
             </CardTitle>
@@ -536,7 +536,7 @@ export function ProfilePage() {
                       <Mail className="h-4 w-4 text-pink-400" />
                       Email
                     </Label>
-                    <div className="bg-white/70 border-2 border-pink-200 rounded-2xl px-4 py-3 text-gray-800">
+                    <div className="bg-white/70 border-2 border-pink-200 rounded-2xl px-3 py-2 text-gray-800 h-10 flex items-center">
                       {registeredEmail}
                     </div>
                   </div>
@@ -575,7 +575,7 @@ export function ProfilePage() {
 
         <Card className="bg-gradient-to-br from-pink-50/90 via-purple-50/90 to-fuchsia-50/90 backdrop-blur-xl border-2 border-pink-200 rounded-3xl shadow-2xl">
           <CardHeader className="border-b border-pink-200/60 flex flex-row items-center justify-between">
-            <CardTitle className="text-pink-800 flex items-center gap-2">
+            <CardTitle className="text-pink-800 font-bold flex items-center gap-2">
               <MapPin className="h-5 w-5 text-pink-500" />
               Địa chỉ
             </CardTitle>
@@ -586,17 +586,17 @@ export function ProfilePage() {
               className="bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white rounded-2xl shadow-xl border-2 border-pink-200"
               style={{ boxShadow: "0 0 20px rgba(255,182,193,0.35)" }}
             >
-              <Plus className="h-4 w-4" />
-              Thêm
+              <Plus className="h-4 w-4 mb-1" />
+              THÊM
             </Button>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-sm text-pink-600">
+            <p className=" text-pink-600">
               Đặt <b>địa chỉ mặc định</b> và thêm <b>tọa độ (latitude/longitude)</b> để hệ thống có thể đề xuất quán gần bạn và tính khoảng cách.
             </p>
 
             {needsLogin ? (
-              <div className="text-sm text-pink-600">Bạn cần đăng nhập để quản lý địa chỉ.</div>
+              <div className=" text-pink-600">Bạn cần đăng nhập để quản lý địa chỉ.</div>
             ) : addressesLoading ? (
               <div className="text-pink-600">Đang tải địa chỉ...</div>
             ) : addresses.length === 0 ? (
