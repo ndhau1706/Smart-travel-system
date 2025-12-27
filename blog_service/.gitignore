@@ -1,0 +1,20 @@
+# --- Môi trường ảo & Cache (Giữ nguyên của bạn) ---
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+alembic/versions/*.pyc
+
+# --- Biến môi trường (QUAN TRỌNG) ---
+.env
+.env.*
+# Giữ lại file ví dụ này để mọi người biết cấu hình
+!.env.example
+
+# --- Cấu hình Editor (Nên chặn) ---
+.vscode/
+.idea/
+
+# --- Logs (Nếu sau này có file log lỗi) ---
+*.log
