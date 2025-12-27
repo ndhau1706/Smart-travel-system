@@ -3,10 +3,13 @@ Advanced restaurant utility functions for enhanced recommendations.
 Includes: time-aware filtering, distance calculation, trending score, review analysis, dish extraction.
 """
 from typing import Dict, Any, Optional, List, Tuple
-from datetime import datetime, time
+from datetime import datetime, time, timezone, timedelta
 import re
 import math
 from collections import Counter
+
+# Vietnam timezone (UTC+7)
+VN_TZ = timezone(timedelta(hours=7))
 
 
 def parse_time_range(time_str: str) -> Optional[Tuple[time, time]]:
@@ -47,6 +50,7 @@ def parse_time_range(time_str: str) -> Optional[Tuple[time, time]]:
 def is_restaurant_open(opening_hours: Dict[str, str], check_time: Optional[datetime] = None) -> Tuple[bool, str]:
     """
     Check if restaurant is currently open.
+    FIXED: Safe handling of None/invalid data.
     
     Args:
         opening_hours: Dictionary of weekday -> time range (or JSON string)
@@ -55,7 +59,8 @@ def is_restaurant_open(opening_hours: Dict[str, str], check_time: Optional[datet
     Returns:
         Tuple of (is_open: bool, status_message: str)
     """
-    if not opening_hours:
+    # FIXED: Handle None explicitly
+    if opening_hours is None or not opening_hours:
         return (True, "")  # Assume open if no hours provided
     
     # Handle case where opening_hours is a JSON string (from FAISS/BM25 storage)
@@ -72,7 +77,7 @@ def is_restaurant_open(opening_hours: Dict[str, str], check_time: Optional[datet
         return (True, "")
     
     if check_time is None:
-        check_time = datetime.now()
+        check_time = datetime.now(VN_TZ)
     
     # Map Vietnamese weekday names to datetime weekday (0=Monday, 6=Sunday)
     weekday_map = {
@@ -123,14 +128,19 @@ def is_restaurant_open(opening_hours: Dict[str, str], check_time: Optional[datet
 def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """
     Calculate distance between two coordinates using Haversine formula.
+    FIXED: Safe handling of None values.
     
     Args:
         lat1, lon1: First coordinate
         lat2, lon2: Second coordinate
         
     Returns:
-        Distance in kilometers
+        Distance in kilometers, or None if any coordinate is None
     """
+    # FIXED: Check for None values
+    if any(coord is None for coord in [lat1, lon1, lat2, lon2]):
+        return None
+    
     # Radius of Earth in kilometers
     R = 6371.0
     

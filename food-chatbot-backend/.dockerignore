@@ -1,47 +1,126 @@
-# Python
-__pycache__/
+# =============================================================================
+# Docker Build Ignore File
+# =============================================================================
+# Files and directories to exclude from the Docker build context
+# This reduces build time and image size
+# =============================================================================
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python cache
+__pycache__
 *.py[cod]
 *$py.class
 *.so
 .Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+bin/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+*.manifest
+*.spec
 
-# Virtual Environment
+# Virtual environments
+.env
+.env.*
+!.env.example
 venv/
 ENV/
 env/
-
-# Environment Variables
-.env
-
-# Database (should be mounted as volume)
-database/*.db
-
-# FAISS Index (should be generated on startup)
-data/faiss_index/
-data/*.index
-data/*.pkl
-
-# Logs
-*.log
+.venv/
 
 # IDE
-.vscode/
 .idea/
+.vscode/
 *.swp
 *.swo
+*~
+.project
+.pydevproject
+.settings/
 
-# OS
-.DS_Store
-Thumbs.db
-
-# Git
-.git/
-.gitignore
-
-# Test files
-test_*.py
-*_test.py
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.log
 
 # Documentation
-README.md
-API_EXAMPLES.md
+docs/
+*.md
+!README.md
+!API_DOCUMENTATION.md
+
+# Docker
+Dockerfile*
+docker-compose*
+.docker/
+
+# Local development
+*.local
+*.bak
+tmp/
+temp/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+logs/
+*.log
+
+# Test data
+tests/
+test_*.py
+*_test.py
+conftest.py
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+Jenkinsfile
+azure-pipelines.yml
+
+# Misc
+*.sqlite
+*.db
+Makefile
+LICENSE
+CHANGELOG.md
+CONTRIBUTING.md
+
+# Secrets (should never be in image)
+*.pem
+*.key
+secrets/
+credentials/
+
+# Data files (mounted as volumes in production)
+# Keep the structure but exclude large data files
+data/*.pkl
+data/*.index
+database/*.db

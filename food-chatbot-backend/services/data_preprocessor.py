@@ -2,12 +2,15 @@
 Data preprocessing service for loading and preparing restaurant data.
 """
 import json
+import logging
 import aiosqlite
 from pathlib import Path
 from typing import List, Dict, Any
 from config import settings
 from database import db_manager
 from utils import normalize_text
+
+logger = logging.getLogger(__name__)
 
 
 class DataPreprocessor:
@@ -175,16 +178,16 @@ class DataPreprocessor:
         """
         Initialize data: load from JSON, preprocess, and save to database.
         """
-        print("Loading restaurant data from JSON...")
+        logger.info("Loading restaurant data from JSON...")
         raw_data = await self.load_restaurants()
-        print(f"Loaded {len(raw_data)} restaurants")
+        logger.info(f"Loaded {len(raw_data)} restaurants")
         
-        print("Preprocessing restaurant data...")
+        logger.info("Preprocessing restaurant data...")
         processed_data = [self.preprocess_restaurant(r) for r in raw_data]
         
-        print("Saving to database...")
+        logger.info("Saving to database...")
         await self.save_to_database(processed_data)
-        print("Data initialization complete!")
+        logger.info("Data initialization complete!")
         
         return processed_data
 

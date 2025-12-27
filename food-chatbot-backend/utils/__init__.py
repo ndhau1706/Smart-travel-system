@@ -47,9 +47,17 @@ from .intent_classifier import (
     SubIntent,
     intent_classifier,
 )
+from .input_validator import (
+    InputValidator,
+    input_validator,
+)
 from .error_recovery import (
     ErrorRecoveryEngine,
     FallbackResponseGenerator,
+)
+from .restaurant_validator import (
+    RestaurantValidator,
+    restaurant_validator,
 )
 
 __all__ = [
@@ -95,4 +103,6 @@ __all__ = [
     "intent_classifier",
     "ErrorRecoveryEngine",
     "FallbackResponseGenerator",
+    "RestaurantValidator",
+    "restaurant_validator",
 ]

@@ -14,9 +14,17 @@ class Settings(BaseSettings):
     PORT: int = 8000
     DEBUG: bool = True
     
-    # Ollama Configuration
-    OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "llama3.1:8b"
+    # Groq Cloud Configuration - Multi API Key Support
+    GROQ_API_KEYS: str = ""  # Comma-separated API keys in .env file
+    GROQ_PRIMARY_MODEL: str = "llama-3.3-70b-versatile"  # Llama 3.3 70B - Main model (fast + accurate)
+    GROQ_FALLBACK_MODEL: str = "llama-3.1-8b-instant"  # Llama 3.1 8B - Fast fallback
+    GROQ_SECONDARY_FALLBACK_MODEL: str = "mixtral-8x7b-32768"  # Mixtral - Final backup
+    
+    # JWT Authentication Configuration
+    JWT_SECRET_KEY: str = "your-super-secret-key-change-in-production"  # CHANGE IN PRODUCTION!
+    JWT_ALGORITHM: str = "HS256"
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
+    JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     
     # Embedding Model
     EMBEDDING_MODEL: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
@@ -34,13 +42,19 @@ class Settings(BaseSettings):
     VECTOR_DIMENSION: int = 384
     
     # Hybrid Search Weights
-    # BM25 ONLY - semantic search causes incorrect results
-    SEMANTIC_WEIGHT: float = 0.0
-    BM25_WEIGHT: float = 1.0
+    # Hybrid: Semantic for understanding + BM25 for exact matching
+    SEMANTIC_WEIGHT: float = 0.6
+    BM25_WEIGHT: float = 0.4
     
     # Ranking Configuration
-    MAX_RESULTS: int = 10  # Always return 10 results
+    MAX_RESULTS: int = 10  # Top results after ranking
     DISTANCE_THRESHOLD: float = 10.0
+    
+    # Multi-criteria Ranking Weights
+    WEIGHT_RELEVANCE: float = 0.4  # Search relevance score
+    WEIGHT_RATING: float = 0.25    # Restaurant rating
+    WEIGHT_DISTANCE: float = 0.20  # Distance from user
+    WEIGHT_POPULARITY: float = 0.15 # Rating count
     
     # Language Detection
     DEFAULT_LANGUAGE: str = "vi"

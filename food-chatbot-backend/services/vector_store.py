@@ -1,33 +1,122 @@
 """
 Vector store service using FAISS for semantic search.
 """
+import logging
 import numpy as np
 import faiss
 import pickle
+import os
 from pathlib import Path
 from typing import List, Dict, Any, Tuple
 from sentence_transformers import SentenceTransformer
 from config import settings
 from services.data_preprocessor import data_preprocessor
 
+logger = logging.getLogger(__name__)
+
 
 class VectorStore:
     """FAISS-based vector store for semantic search."""
+    
+    # BUG #27 FIX: Allowed base directory for index storage
+    ALLOWED_BASE_DIR = Path("./data").resolve()
+    MAX_PATH_LENGTH = 255
     
     def __init__(self):
         self.index = None
         self.model = None
         self.restaurant_ids = []
         self.dimension = settings.VECTOR_DIMENSION
-        self.index_path = Path(settings.FAISS_INDEX_PATH)
+        
+        # BUG #27 FIX: Validate and sanitize index path
+        self.index_path = self._validate_index_path(settings.FAISS_INDEX_PATH)
+    
+    @staticmethod
+    def _validate_index_path(path_str: str) -> Path:
+        """
+        BUG #27 FIX: Validate index path to prevent path traversal attacks.
+        
+        Security checks:
+        - Path length validation
+        - Null byte injection prevention
+        - Path traversal prevention (../ or .\\)
+        - Symbolic link resolution and validation
+        - Absolute path requirement
+        - Restricted to allowed base directory
+        - No special device files
+        
+        Args:
+            path_str: Path string from settings
+            
+        Returns:
+            Validated Path object
+            
+        Raises:
+            ValueError: If path is invalid or unsafe
+        """
+        # Check 1: Basic validation
+        if not path_str or not isinstance(path_str, str):
+            raise ValueError("Index path must be a non-empty string")
+        
+        # Check 2: Length validation
+        if len(path_str) > VectorStore.MAX_PATH_LENGTH:
+            raise ValueError(f"Index path too long: {len(path_str)} chars (max {VectorStore.MAX_PATH_LENGTH})")
+        
+        # Check 3: Null byte injection prevention
+        if '\x00' in path_str or '\0' in path_str:
+            raise ValueError("Index path contains null bytes")
+        
+        # Check 4: Path traversal prevention
+        dangerous_patterns = ['../', '..\\', '../', '..\\']
+        if any(pattern in path_str for pattern in dangerous_patterns):
+            raise ValueError("Index path contains path traversal sequences")
+        
+        # Check 5: Resolve to absolute path
+        try:
+            path = Path(path_str).resolve(strict=False)
+        except (OSError, RuntimeError) as e:
+            raise ValueError(f"Invalid path format: {e}")
+        
+        # Check 6: Ensure path is within allowed base directory
+        try:
+            # Create base dir if doesn't exist
+            VectorStore.ALLOWED_BASE_DIR.mkdir(parents=True, exist_ok=True)
+            
+            # Check if path is relative to allowed base
+            path.relative_to(VectorStore.ALLOWED_BASE_DIR)
+        except ValueError:
+            raise ValueError(
+                f"Index path must be within {VectorStore.ALLOWED_BASE_DIR}, got {path}"
+            )
+        
+        # Check 7: Prevent special device files on Unix
+        path_str_lower = str(path).lower()
+        dangerous_paths = ['/dev/', '/proc/', '/sys/', '\\\\', 'c:\\windows\\', 'c:\\system32\\']
+        if any(dangerous in path_str_lower for dangerous in dangerous_paths):
+            raise ValueError("Index path points to system/device files")
+        
+        # Check 8: If path exists, verify it's not a symlink to dangerous location
+        if path.exists():
+            # Resolve symlinks
+            real_path = path.resolve(strict=True)
+            
+            # Verify resolved path is still within allowed base
+            try:
+                real_path.relative_to(VectorStore.ALLOWED_BASE_DIR)
+            except ValueError:
+                raise ValueError(
+                    f"Symbolic link points outside allowed directory: {real_path}"
+                )
+        
+        return path
         
     def load_model(self):
         """Load sentence transformer model."""
         if self.model is None:
-            print(f"Loading embedding model: {settings.EMBEDDING_MODEL}")
+            logger.info(f"Loading embedding model: {settings.EMBEDDING_MODEL}")
             self.model = SentenceTransformer(settings.EMBEDDING_MODEL)
             self.dimension = self.model.get_sentence_embedding_dimension()
-            print(f"Model loaded. Embedding dimension: {self.dimension}")
+            logger.info(f"Model loaded. Embedding dimension: {self.dimension}")
     
     def create_embeddings(self, texts: List[str]) -> np.ndarray:
         """
@@ -54,11 +143,11 @@ class VectorStore:
         """
         # Check if index already exists
         if not force_rebuild and self.index_exists():
-            print("Loading existing FAISS index...")
+            logger.info("Loading existing FAISS index...")
             self.load_index()
             return
         
-        print("Building new FAISS index...")
+        logger.info("Building new FAISS index...")
         
         # Load model
         self.load_model()
@@ -67,7 +156,7 @@ class VectorStore:
         restaurants = await data_preprocessor.load_from_database()
         
         if not restaurants:
-            print("No restaurant data found. Please run data initialization first.")
+            logger.warning("No restaurant data found. Please run data initialization first.")
             return
         
         # Create searchable texts
@@ -79,11 +168,11 @@ class VectorStore:
             texts.append(searchable_text)
             self.restaurant_ids.append(restaurant['id'])
         
-        print(f"Creating embeddings for {len(texts)} restaurants...")
+        logger.info(f"Creating embeddings for {len(texts)} restaurants...")
         embeddings = self.create_embeddings(texts)
         
         # Create FAISS index with IVF Flat
-        print("Creating FAISS IVF Flat index...")
+        logger.info("Creating FAISS IVF Flat index...")
         
         # Number of clusters for IVF
         nlist = min(100, len(texts) // 10)
@@ -97,16 +186,16 @@ class VectorStore:
         self.index = faiss.IndexIVFFlat(quantizer, self.dimension, nlist)
         
         # Train index
-        print("Training index...")
+        logger.info("Training index...")
         self.index.train(embeddings)
         
         # Add vectors
-        print("Adding vectors to index...")
+        logger.info("Adding vectors to index...")
         self.index.add(embeddings)
         
         # Save index
         self.save_index()
-        print(f"FAISS index built successfully with {self.index.ntotal} vectors")
+        logger.info(f"FAISS index built successfully with {self.index.ntotal} vectors")
     
     def save_index(self):
         """Save FAISS index and metadata to disk."""
@@ -125,15 +214,28 @@ class VectorStore:
         with open(metadata_file, 'wb') as f:
             pickle.dump(metadata, f)
         
-        print(f"Index saved to {self.index_path}")
+        logger.info(f"Index saved to {self.index_path}")
     
     def load_index(self):
         """Load FAISS index and metadata from disk."""
+        # BUG #27 FIX: Validate file paths before loading
         index_file = self.index_path / "faiss.index"
         metadata_file = self.index_path / "metadata.pkl"
         
-        if not index_file.exists() or not metadata_file.exists():
-            raise FileNotFoundError("Index files not found")
+        # Additional validation for file paths
+        for file_path in [index_file, metadata_file]:
+            if not file_path.exists():
+                raise FileNotFoundError(f"Index file not found: {file_path}")
+            
+            # BUG #27 FIX: Verify file is within allowed directory
+            try:
+                file_path.resolve(strict=True).relative_to(self.ALLOWED_BASE_DIR)
+            except ValueError:
+                raise ValueError(f"Index file outside allowed directory: {file_path}")
+            
+            # BUG #27 FIX: Prevent loading from special devices
+            if not file_path.is_file():
+                raise ValueError(f"Index path is not a regular file: {file_path}")
         
         # Load FAISS index
         self.index = faiss.read_index(str(index_file))
@@ -148,7 +250,7 @@ class VectorStore:
         # Load model
         self.load_model()
         
-        print(f"Index loaded with {self.index.ntotal} vectors")
+        logger.info(f"Index loaded with {self.index.ntotal} vectors")
     
     def index_exists(self) -> bool:
         """Check if index files exist."""

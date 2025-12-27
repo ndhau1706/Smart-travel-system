@@ -1,7 +1,7 @@
 """
 Authentication service for user login/register and guest tracking.
 """
-import hashlib
+import bcrypt
 import uuid
 from typing import Optional, Dict, Any
 from database import db_manager
@@ -11,6 +11,7 @@ class AuthService:
     """Handle authentication and user management."""
     
     GUEST_MESSAGE_LIMIT = 10
+    BCRYPT_ROUNDS = 12  # Cost factor for bcrypt (recommended: 12-14)
     
     async def create_guest_user(self) -> str:
         """
@@ -51,9 +52,18 @@ class AuthService:
                 if existing:
                     return {"error": "Email already registered"}
             
-            # Create user
+            # Validate password strength
+            if len(password) < 8:
+                return {"error": "Password must be at least 8 characters"}
+            
+            # Create user with secure bcrypt hashing
             user_id = f"user-{uuid.uuid4().hex[:12]}"
-            password_hash = hashlib.sha256(password.encode()).hexdigest()
+            
+            # Generate secure password hash with salt
+            password_hash = bcrypt.hashpw(
+                password.encode('utf-8'),
+                bcrypt.gensalt(rounds=self.BCRYPT_ROUNDS)
+            ).decode('utf-8')
             
             await db.execute("""
                 INSERT INTO users (id, email, username, password_hash, is_guest)
@@ -75,17 +85,22 @@ class AuthService:
         Returns:
             Dict with user info or error
         """
-        password_hash = hashlib.sha256(password.encode()).hexdigest()
-        
         async with db_manager.get_connection() as db:
+            # Fetch user by email first
             async with db.execute("""
-                SELECT id, email, username, is_guest
+                SELECT id, email, username, is_guest, password_hash
                 FROM users
-                WHERE email = ? AND password_hash = ?
-            """, (email, password_hash)) as cursor:
+                WHERE email = ?
+            """, (email,)) as cursor:
                 user = await cursor.fetchone()
                 
                 if not user:
+                    return {"error": "Invalid email or password"}
+                
+                # Verify password using bcrypt
+                stored_hash = user[4]  # password_hash column
+                
+                if not bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8')):
                     return {"error": "Invalid email or password"}
                 
                 return {

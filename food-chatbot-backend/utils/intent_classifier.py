@@ -117,12 +117,62 @@ SUBINTENT_KEYWORDS = {
     },
 }
 
-# Contradiction Keywords
+# Vietnamese Idiom Exceptions (NOT contradictions!)
+# EXPANDED: These are common phrases that LOOK like contradictions but are valid requests
+IDIOM_EXCEPTIONS = [
+    # ===== PRICE-QUALITY PARADOXES (most common) =====
+    r"rẻ\s+(mà|nhưng|mà vẫn|nhưng vẫn)\s+(chất|ngon|xịn|tốt|chất lượng)",  # "rẻ mà chất"
+    r"(mềm|bèo|hạt dẻ|giá sinh viên)\s+(mà|nhưng)\s+(ngon|chất|xịn|tốt)",  # slang for good value
+    r"bình dân\s+(mà|nhưng)\s+(ngon|chất|tốt|chất lượng cao)",  # "bình dân mà ngon"
+    r"giá\s+(rẻ|tốt|mềm|bình dân)\s+(mà|nhưng)?\s*(chất lượng|ngon|xịn|tốt)",  # "giá rẻ chất lượng"
+    r"không\s+(đắt|tốn kém)\s+(mà|nhưng)\s+(ngon|tốt|chất)",  # "không đắt mà ngon"
+    r"giá sinh viên\s+(mà|nhưng)\s+(ngon|chất|xịn)",  # "giá sinh viên mà ngon"
+    r"cheap\s+but\s+(good|quality|nice|excellent)",  # English equivalent
+    
+    # ===== NEW: UPSCALE BUT AFFORDABLE =====
+    r"sang\s+(mà|nhưng)\s+(không\s+đắt|giá\s+tốt|rẻ|bình dân)",  # "sang mà không đắt"
+    r"sang trọng\s+(mà|nhưng|vẫn)\s+(không\s+đắt|giá\s+(hợp lý|tốt|rẻ)|bình dân)",  # "sang trọng mà giá tốt"
+    r"cao cấp\s+(mà|nhưng)\s+(không\s+đắt|giá\s+(rẻ|tốt)|bình dân)",  # "cao cấp mà không đắt"
+    r"(xịn|chất)\s+(mà|nhưng)\s+(rẻ|giá\s+tốt|không\s+đắt)",  # "xịn mà rẻ"
+    r"upscale\s+but\s+(affordable|reasonable|cheap)",  # English
+    
+    # ===== NEW: BUDGET WITH HIGH QUALITY =====
+    r"giá\s+bình dân\s+(mà|nhưng)?\s+(chất lượng\s+cao|xịn|tốt)",  # "giá bình dân chất lượng cao"
+    r"(rẻ|mềm|bình dân)\s+(mà|nhưng)?\s+chất lượng\s+(cao|tốt|xịn)",  # "rẻ chất lượng cao"
+    
+    # ===== NEW: SPACE PARADOXES =====
+    r"rộng\s+(mà|nhưng|vẫn)\s+(ấm cúng|cozy|intimate|ấm áp|thoải mái)",  # "rộng nhưng ấm cúng"
+    r"to\s+(mà|nhưng)\s+(ấm cúng|cozy|không\s+gian\s+đẹp)",  # "to mà ấm cúng"
+    r"spacious\s+but\s+(cozy|intimate|warm)",  # English
+    r"nhỏ\s+(mà|nhưng)\s+(rộng rãi|thoải mái|không\s+chật)",  # "nhỏ mà rộng rãi"
+    
+    # ===== NEW: POPULARITY PARADOXES =====
+    r"đông\s+(mà|nhưng|vẫn)\s+(thoải mái|không\s+chật|vẫn\s+ngon|phục vụ\s+nhanh)",  # "đông mà vẫn thoải mái"
+    r"(nổi tiếng|đông khách)\s+(mà|nhưng)\s+(không\s+chật|thoải mái|vẫn\s+tốt)",  # "nổi tiếng mà không chật"
+    r"popular\s+but\s+(comfortable|not\s+crowded|spacious)",  # English
+    r"crowded\s+but\s+(comfortable|good\s+service)",  # English
+    
+    # ===== NEW: NOISE/ATMOSPHERE PARADOXES =====
+    r"yên tĩnh\s+(mà|nhưng)\s+(vui vẻ|không\s+buồn|sôi động\s+vừa phải)",  # "yên tĩnh mà vui vẻ"
+    r"(sôi động|vui)\s+(mà|nhưng)\s+(không\s+ồn|yên tĩnh\s+vừa phải)",  # "vui mà không ồn"
+    r"lively\s+but\s+(not\s+noisy|quiet)",  # English
+    r"quiet\s+but\s+(fun|lively)",  # English
+    
+    # ===== NEW: SPEED-QUALITY PARADOXES =====
+    r"nhanh\s+(mà|nhưng|vẫn)\s+(ngon|chất lượng|tươi|sạch)",  # "nhanh mà ngon"
+    r"fast\s+but\s+(good|quality|delicious)",  # English
+    r"phục vụ\s+nhanh\s+(mà|nhưng)\s+(chu đáo|tốt|nhiệt tình)",  # "phục vụ nhanh mà chu đáo"
+    
+    # ===== NEW: SIZE-QUALITY PARADOXES =====
+    r"(nhỏ|bé)\s+(mà|nhưng)\s+(ngon|chất|nổi tiếng|đông khách)",  # "nhỏ mà ngon"
+    r"small\s+but\s+(good|famous|popular)",  # English
+]
+
+# Contradiction Keywords - FIXED: Proper idiom exception handling
 CONTRADICTION_KEYWORDS = {
-    "cheap_expensive": (["rẻ", "cheap", "hạt dẻ"], ["đắt", "expensive", "chát", "cháy túi"]),
-    "quality_price": (["xịn", "ngon", "chất", "cao cấp"], ["rẻ", "cheap", "mềm"]),
-    "space": (["rộng", "spacious"], ["nhỏ", "cozy", "intimate", "nhỏ gọn"]),
-    "noise": (["yên tĩnh", "quiet"], ["vui vẻ", "lively", "sôi động", "tấp nập"]),
+    "cheap_expensive": (["rẻ", "cheap", "hạt dẻ", "bèo", "mềm"], ["đắt", "expensive", "chát", "cháy túi"]),
+    "space": (["rộng", "spacious", "to"], ["nhỏ", "cozy", "intimate", "nhỏ gọn", "hẹp"]),
+    "noise": (["yên tĩnh", "quiet", "im lặng"], ["vui vẻ", "lively", "sôi động", "tấp nập", "ồn ào"]),
 }
 
 # Ambiguity Keywords
@@ -260,6 +310,13 @@ class IntentClassifier:
     def _detect_contradictions(self, query: str) -> List[str]:
         """Detect contradictory requests."""
         contradictions = []
+        
+        # CRITICAL FIX: Check idiom exceptions FIRST
+        # If query matches Vietnamese idiom pattern, it's NOT a contradiction
+        for idiom_pattern in IDIOM_EXCEPTIONS:
+            if re.search(idiom_pattern, query, re.IGNORECASE):
+                # This is a valid idiom like "rẻ mà chất", NOT a contradiction
+                return []  # Return empty list immediately
         
         for contra_type, (group1, group2) in CONTRADICTION_KEYWORDS.items():
             has_group1 = any(kw in query for kw in group1)

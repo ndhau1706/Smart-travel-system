@@ -281,22 +281,28 @@ def _handle_code_switching(text: str) -> str:
 
 def _expand_synonyms(text: str, synonym_map: Dict[str, List[str]]) -> str:
     """
-    Expand synonyms to primary term BUT preserve specific terms.
-    Logic: Keep specific food names (phở, buffet) and only expand generic/misspelled variants.
+    Expand synonyms to primary term with IMPROVED cross-language support.
+    Logic: Allow cross-language expansion (coffee → cà phê) but preserve specific dish names.
     
-    Problem: "phở" → "món nước" is WRONG (too generic)
-    Solution: Only replace if synonym is NOT already a primary term elsewhere
+    FIXED: Enable "coffee" → "cà phê", "cafe" → "cà phê" expansion
     """
-    # Build set of all primary terms to preserve
+    # Build set of all primary terms
     primary_terms = set(synonym_map.keys())
+    
+    # Cross-language exceptions: allow these to be expanded
+    cross_language_allow = {
+        'coffee', 'cafe', 'tea', 'beer', 'wine',  # English drinks
+        'pizza', 'pasta', 'sushi', 'burger',      # International food
+        'buffet', 'hotpot', 'bbq', 'grill'        # Cooking styles
+    }
     
     for primary, synonyms in synonym_map.items():
         for synonym in synonyms:
-            # Skip if this synonym is also a primary term elsewhere
-            # This prevents "phở" from being replaced by "món nước"
-            if synonym in primary_terms:
-                continue
-            text = re.sub(r'\b' + re.escape(synonym) + r'\b', primary, text)
+            # Allow expansion if:
+            # 1. Synonym is NOT a primary term, OR
+            # 2. Synonym is in cross-language allow list
+            if synonym not in primary_terms or synonym.lower() in cross_language_allow:
+                text = re.sub(r'\b' + re.escape(synonym) + r'\b', primary, text, flags=re.IGNORECASE)
     
     return text
 
