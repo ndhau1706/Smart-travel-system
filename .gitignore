@@ -30,3 +30,7 @@ Thumbs.db
 .vscode/
 _tmp_*.js
 .git_backups/
+/src/
+/package.json
+/index.html
+/vite.config.ts
