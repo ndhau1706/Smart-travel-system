@@ -1,0 +1,105 @@
+# =============================================================================
+# Prometheus Configuration for Food Chatbot Backend
+# =============================================================================
+# Metrics collection configuration for monitoring the application stack
+# =============================================================================
+
+global:
+  # How frequently to scrape targets
+  scrape_interval: 15s
+  # How frequently to evaluate rules
+  evaluation_interval: 15s
+  # Timeout for scraping
+  scrape_timeout: 10s
+
+  # Attach these labels to any time series or alerts
+  external_labels:
+    monitor: 'food-chatbot-monitor'
+    environment: 'production'
+
+# Alerting configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Rule files to load
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# Scrape configurations
+scrape_configs:
+  # ==========================================================================
+  # Prometheus self-monitoring
+  # ==========================================================================
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    metrics_path: /metrics
+
+  # ==========================================================================
+  # Food Chatbot Backend
+  # ==========================================================================
+  - job_name: 'food-chatbot-backend'
+    static_configs:
+      - targets: ['backend:8000']
+        labels:
+          service: 'chatbot-backend'
+          environment: 'production'
+    metrics_path: /metrics
+    scrape_interval: 30s
+    # If the backend doesn't have /metrics, use health endpoint
+    # and rely on nginx/cadvisor for HTTP metrics
+
+  # ==========================================================================
+  # Health Check Monitoring
+  # ==========================================================================
+  - job_name: 'backend-health'
+    static_configs:
+      - targets: ['backend:8000']
+    metrics_path: /health
+    scrape_interval: 30s
+    # This won't work as actual prometheus metrics but can be used
+    # with blackbox exporter for availability monitoring
+
+  # ==========================================================================
+  # Redis Monitoring
+  # ==========================================================================
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+        labels:
+          service: 'redis'
+    # Requires redis_exporter
+    # - targets: ['redis-exporter:9121']
+
+  # ==========================================================================
+  # Nginx Monitoring
+  # ==========================================================================
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx:80']
+        labels:
+          service: 'nginx'
+    # Requires nginx stub_status or nginx-exporter
+    # metrics_path: /stub_status
+
+  # ==========================================================================
+  # Container Monitoring (cAdvisor)
+  # ==========================================================================
+  # Uncomment if using cAdvisor
+  # - job_name: 'cadvisor'
+  #   static_configs:
+  #     - targets: ['cadvisor:8080']
+  #   metrics_path: /metrics
+
+  # ==========================================================================
+  # Node Exporter (Host Metrics)
+  # ==========================================================================
+  # Uncomment if using node_exporter
+  # - job_name: 'node'
+  #   static_configs:
+  #     - targets: ['node-exporter:9100']
+  #   metrics_path: /metrics

@@ -1,0 +1,2 @@
+# Development-only dependencies (optional).
+# Keep empty or add tools for local dev.

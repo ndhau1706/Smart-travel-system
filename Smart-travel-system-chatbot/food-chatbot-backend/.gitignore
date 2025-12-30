@@ -1,0 +1,64 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.log
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+data/chatbot.db
+data/bm25_index.pkl
+
+# IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# NEVER COMMIT THESE FILES (sensitive)
+/tmp/
+../APIkey.md
+../encrypt_api_keys.py
+../encrypt_gist_url.py
+../decrypt_gist_url.py
+
+# Build artifacts
+*.tar.gz
+*.zip
+
+# Logs
+logs/*.log
+logs/*.json
+
+# Security reports
+bandit-report.json
+safety-report.json
+
+# OS files
+Thumbs.db
+.DS_Store

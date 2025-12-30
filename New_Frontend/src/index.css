@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Canvas */
+    --background: 210 40% 98%; /* slate-50 */
+    --foreground: 222.2 47.4% 11.2%; /* slate-900 */
+
+    /* Surfaces */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+
+    /* Brand */
+    --primary: 243.4 75.4% 58.6%; /* indigo-600 */
+    --primary-foreground: 210 40% 98%; /* slate-50 */
+    --highlight: 24.6 95% 53.1%; /* orange-500 */
+    --highlight-foreground: 210 40% 98%;
+
+    /* Neutral */
+    --secondary: 210 40% 96.1%; /* slate-100 */
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%; /* slate-500 */
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    /* System */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%; /* slate-200 */
+    --input: 214.3 31.8% 91.4%;
+    --ring: 243.4 75.4% 58.6%; /* indigo-600 */
+    --radius: 0.75rem;
+
+    /* Charts */
+    --chart-1: 24.6 95% 53.1%;
+    --chart-2: 243.4 75.4% 58.6%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 173 58% 39%;
+
+    /* Sidebar (dark) */
+    --sidebar-background: 222.2 47.4% 11.2%; /* slate-900 */
+    --sidebar-foreground: 210 40% 98%; /* slate-50 */
+    --sidebar-primary: 243.4 75.4% 58.6%; /* indigo-600 */
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 215 27.9% 16.9%; /* slate-800-ish */
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 215 27.9% 16.9%;
+    --sidebar-ring: 243.4 75.4% 58.6%;
+  }
+
+  :root[data-theme="pink"] {
+    /* Canvas */
+    --background: 330 100% 98%;
+    --foreground: 335 35% 15%;
+
+    /* Surfaces */
+    --card: 0 0% 100%;
+    --card-foreground: 335 35% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 335 35% 15%;
+
+    /* Brand */
+    --primary: 330 81% 60%;
+    --primary-foreground: 210 40% 98%;
+    --highlight: 291 83% 60%;
+    --highlight-foreground: 210 40% 98%;
+
+    /* Neutral */
+    --secondary: 330 100% 96%;
+    --secondary-foreground: 335 35% 15%;
+    --muted: 330 100% 96%;
+    --muted-foreground: 330 18% 45%;
+    --accent: 330 100% 96%;
+    --accent-foreground: 335 35% 15%;
+
+    /* System */
+    --border: 330 60% 90%;
+    --input: 330 60% 90%;
+    --ring: 330 81% 60%;
+
+    /* Charts */
+    --chart-1: 330 81% 60%;
+    --chart-2: 291 83% 60%;
+    --chart-3: 43 74% 66%;
+    --chart-4: 24.6 95% 53.1%;
+    --chart-5: 243.4 75.4% 58.6%;
+
+    /* Sidebar (pink) */
+    --sidebar-background: 330 100% 97%;
+    --sidebar-foreground: 335 35% 15%;
+    --sidebar-primary: 330 81% 60%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 330 80% 94%;
+    --sidebar-accent-foreground: 335 35% 15%;
+    --sidebar-border: 330 60% 90%;
+    --sidebar-ring: 330 81% 60%;
+  }
+
+  .dark {
+    --background: 222.2 47.4% 11.2%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 47.4% 11.2%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 243.4 75.4% 58.6%;
+    --primary-foreground: 210 40% 98%;
+    --highlight: 24.6 95% 53.1%;
+    --highlight-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 243.4 75.4% 58.6%;
+    --sidebar-background: 222.2 47.4% 11.2%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 243.4 75.4% 58.6%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
+    --sidebar-ring: 243.4 75.4% 58.6%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+      "Apple Color Emoji", "Segoe UI Emoji";
+  }
+}
+
+/* Scrollbar (subtle) */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(79, 70, 229, 0.35);
+  border-radius: 999px;
+  border: 2px solid rgba(248, 250, 252, 0.7);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 70, 229, 0.55);
+}
