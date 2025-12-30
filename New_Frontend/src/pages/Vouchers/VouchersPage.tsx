@@ -78,7 +78,11 @@ export function VouchersPage() {
         setTotal(data.total);
       })
       .catch((err: any) => {
-        setError(err?.message || "Không tải được voucher");
+        const message = err?.message || "Không tải được voucher";
+        setError(message);
+        if (String(message).includes("401")) {
+          window.dispatchEvent(new Event("auth:open"));
+        }
       })
       .finally(() => {
         setIsLoading(false);
@@ -105,7 +109,11 @@ export function VouchersPage() {
       })
       .catch((err: any) => {
         if (!active) return;
-        setError(err?.message || "Không tải được voucher");
+        const message = err?.message || "Không tải được voucher";
+        setError(message);
+        if (String(message).includes("401")) {
+          window.dispatchEvent(new Event("auth:open"));
+        }
       })
       .finally(() => {
         if (active) setIsLoading(false);

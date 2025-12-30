@@ -1,5 +1,5 @@
 import { API_URL } from "./config";
-import { getAuthHeaders } from "./auth";
+import { clearStoredAuth, getAuthHeaders, refreshAuthTokens } from "./auth";
 
 export type CaroPlayer = "X" | "O";
 export type CaroWinner = CaroPlayer | "draw";
@@ -74,6 +74,25 @@ async function handleApi<T>(res: Response): Promise<T> {
     throw new Error(getErrorMessage(payload, "Request failed"));
   }
   return payload.data as T;
+}
+
+async function fetchWithAuth(input: RequestInfo, init?: RequestInit): Promise<Response> {
+  const res = await fetch(input, {
+    ...init,
+    headers: { ...(init?.headers || {}), ...getAuthHeaders() },
+  });
+  if (res.status !== 401) return res;
+
+  const refreshed = await refreshAuthTokens();
+  if (!refreshed) {
+    clearStoredAuth();
+    return res;
+  }
+
+  return fetch(input, {
+    ...init,
+    headers: { ...(init?.headers || {}), ...getAuthHeaders() },
+  });
 }
 
 export async function createCaroRoom(playerName?: string, boardSize?: number): Promise<CaroGameEnvelope> {
@@ -188,9 +207,7 @@ export async function fetchGameLeaderboard(
   game: GameKey,
   limit: number = 200,
 ): Promise<{ entries: GameLeaderboardEntry[]; totalPlayers: number; round: GameRoundInfo | null }> {
-  const res = await fetch(`${API_URL}/games/leaderboard/${game}?limit=${encodeURIComponent(String(limit))}`, {
-    headers: { ...getAuthHeaders() },
-  });
+  const res = await fetchWithAuth(`${API_URL}/games/leaderboard/${game}?limit=${encodeURIComponent(String(limit))}`);
   const data = await handleApi<ApiLeaderboardResponse>(res);
   return {
     entries: (data.entries || []).map(mapLeaderboardEntry),
@@ -207,9 +224,9 @@ export async function submitGameScore(payload: {
   entry: GameLeaderboardEntry;
   leaderboard: { entries: GameLeaderboardEntry[]; totalPlayers: number; round: GameRoundInfo | null };
 }> {
-  const res = await fetch(`${API_URL}/games/leaderboard/${payload.game}`, {
+  const res = await fetchWithAuth(`${API_URL}/games/leaderboard/${payload.game}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       player_name: payload.playerName,
       score: payload.score,

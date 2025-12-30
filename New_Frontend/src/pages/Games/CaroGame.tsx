@@ -595,7 +595,11 @@ function CaroLocalGame({
       setRoundInfo(data.leaderboard.round);
       toast.success("Đã ghi nhận chiến thắng PvE");
     } catch (err: any) {
-      toast.error(err?.message || "Không thể ghi nhận chiến thắng");
+      const message = err?.message || "Không thể ghi nhận chiến thắng";
+      toast.error(message);
+      if (String(message).includes("401")) {
+        onRequireAuth("Vui lòng đăng nhập để ghi nhận chiến thắng PvE");
+      }
     }
   };
 

@@ -23,15 +23,64 @@ export interface LoginResponse {
   expires_in: number;
 }
 
-export function getAuthHeaders() {
+type StoredAuth = {
+  user?: AuthUser;
+  accessToken?: string;
+  access_token?: string;
+  refreshToken?: string;
+  refresh_token?: string;
+  expiresIn?: number;
+  expires_in?: number;
+};
+
+function readStoredAuth(): StoredAuth | null {
   const stored = localStorage.getItem("auth");
-  if (!stored) return {};
+  if (!stored) return null;
   try {
-    const parsed = JSON.parse(stored) as { accessToken?: string; access_token?: string; access_token_exp?: number };
-    const token = parsed.accessToken || parsed.access_token;
-    return token ? { Authorization: `Bearer ${token}` } : {};
+    return JSON.parse(stored) as StoredAuth;
   } catch {
-    return {};
+    return null;
+  }
+}
+
+export function getAuthHeaders() {
+  const parsed = readStoredAuth();
+  if (!parsed) return {};
+  const token = parsed.accessToken || parsed.access_token;
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+export function clearStoredAuth() {
+  localStorage.removeItem("auth");
+  window.dispatchEvent(new CustomEvent("auth:updated", { detail: { user: null } }));
+}
+
+export async function refreshAuthTokens(): Promise<{ accessToken: string; refreshToken: string } | null> {
+  const parsed = readStoredAuth();
+  if (!parsed) return null;
+  const refreshToken = parsed.refreshToken || parsed.refresh_token;
+  if (!refreshToken) return null;
+
+  try {
+    const res = await fetch(`${API_URL}/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    });
+    const data = await handleResponse<{ access_token: string; refresh_token: string; expires_in: number }>(res);
+    const next: StoredAuth = {
+      ...parsed,
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
+      expiresIn: data.expires_in,
+    };
+    localStorage.setItem("auth", JSON.stringify(next));
+    if (next.user) {
+      window.dispatchEvent(new CustomEvent("auth:updated", { detail: { user: next.user } }));
+    }
+    return { accessToken: data.access_token, refreshToken: data.refresh_token };
+  } catch {
+    return null;
   }
 }
 

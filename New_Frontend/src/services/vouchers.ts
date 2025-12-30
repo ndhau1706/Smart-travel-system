@@ -1,5 +1,5 @@
 import { API_URL } from "./config";
-import { getAuthHeaders } from "./auth";
+import { clearStoredAuth, getAuthHeaders, refreshAuthTokens } from "./auth";
 
 type ApiErrorShape = {
   code?: string;
@@ -72,6 +72,25 @@ async function handleApi<T>(res: Response): Promise<T> {
   return payload.data as T;
 }
 
+async function fetchWithAuth(input: RequestInfo, init?: RequestInit): Promise<Response> {
+  const res = await fetch(input, {
+    ...init,
+    headers: { ...(init?.headers || {}), ...getAuthHeaders() },
+  });
+  if (res.status !== 401) return res;
+
+  const refreshed = await refreshAuthTokens();
+  if (!refreshed) {
+    clearStoredAuth();
+    return res;
+  }
+
+  return fetch(input, {
+    ...init,
+    headers: { ...(init?.headers || {}), ...getAuthHeaders() },
+  });
+}
+
 function mapVoucher(item: ApiVoucherItem): VoucherItem {
   return {
     id: item.id,
@@ -86,9 +105,7 @@ function mapVoucher(item: ApiVoucherItem): VoucherItem {
 }
 
 export async function fetchVouchers(): Promise<{ items: VoucherItem[]; total: number }> {
-  const res = await fetch(`${API_URL}/vouchers`, {
-    headers: { ...getAuthHeaders() },
-  });
+  const res = await fetchWithAuth(`${API_URL}/vouchers`);
   const data = await handleApi<ApiVoucherResponse>(res);
   return {
     items: (data.items || []).map(mapVoucher),

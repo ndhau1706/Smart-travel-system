@@ -375,8 +375,12 @@ export function TetrisGame() {
           setTotalPlayers(data.leaderboard.totalPlayers);
           setRoundInfo(data.leaderboard.round);
         })
-        .catch(() => {
-          // ignore
+        .catch((err: any) => {
+          const message = err?.message || "Không thể cập nhật bảng xếp hạng";
+          toast.error(message);
+          if (String(message).includes("401")) {
+            window.dispatchEvent(new Event("auth:open"));
+          }
         });
     }
     syncUi(rt);
